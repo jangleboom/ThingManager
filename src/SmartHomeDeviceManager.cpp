@@ -1,4 +1,4 @@
-#include <RTKRoverManager.h>
+#include <SmartHomeDeviceManager.h>
 
 /*
 =================================================================================
@@ -8,7 +8,7 @@
 
 #pragma region: WIFI
 
-bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) 
+bool SmartHomeDeviceManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) 
 {
   bool success = false;
 
@@ -29,24 +29,30 @@ bool RTKRoverManager::setupStationMode(const char* ssid, const char* password, c
     DBG.println(WiFi.getHostname());
     DBG.print(F("IP Address: "));
     DBG.println(WiFi.localIP());
-    success = true;
 
-    if (!MDNS.begin(deviceName)) 
-    {
-      DBG.println("Error starting mDNS, use local IP instead!");
-    } 
-    else 
-    {
-      DBG.print(F("Starting mDNS, find me under <http://www."));
-      DBG.print(getDeviceName(DEVICE_TYPE));
-      DBG.println(F(".local>"));
-    }
+    success = true;
   }
 
   return success;
 }
 
-bool RTKRoverManager::checkConnectionToWifiStation() 
+bool SmartHomeDeviceManager::formatSPIFFS()
+{
+  bool formatted = SPIFFS.format();
+ 
+  if (formatted) 
+  {
+    DBG.println("\n\nSuccessfully formatted");
+  }
+  else
+  {
+    DBG.println("\n\nError during formatting");
+  }
+
+  return formatted;
+}
+
+bool SmartHomeDeviceManager::checkConnectionToWifiStation() 
 { 
   bool isConnectedToStation = false;
 
@@ -67,7 +73,7 @@ bool RTKRoverManager::checkConnectionToWifiStation()
   return isConnectedToStation;
 }
 
-void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword) 
+void SmartHomeDeviceManager::setupAPMode(const char* apSsid, const char* apPassword) 
 {
   DBG.print("Setting soft-AP ... ");
   WiFi.disconnect();
@@ -80,14 +86,11 @@ void RTKRoverManager::setupAPMode(const char* apSsid, const char* apPassword)
   DBG.println(WiFi.softAPIP());
 }
 
-void RTKRoverManager::setupWiFi(AsyncWebServer* server)
+void SmartHomeDeviceManager::setupWiFi(AsyncWebServer* server)
 {
   // Check if we have credentials for a available network
-  // String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
-  // String lastPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
-
-  String lastSSID = getDeviceName("rtkrover");
-  String lastPassword = "michelroth2023";
+  String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
+  String lastPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
 
   if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
   {
@@ -109,7 +112,7 @@ void RTKRoverManager::setupWiFi(AsyncWebServer* server)
   }
 }
 
-bool RTKRoverManager::savedNetworkAvailable(const String& ssid) 
+bool SmartHomeDeviceManager::savedNetworkAvailable(const String& ssid) 
 {
   if (ssid.isEmpty()) return false;
 
@@ -138,7 +141,7 @@ bool RTKRoverManager::savedNetworkAvailable(const String& ssid)
                                 Web server
 =================================================================================
 */
-void RTKRoverManager::startServer(AsyncWebServer *server) 
+void SmartHomeDeviceManager::startServer(AsyncWebServer *server) 
 {
   server->on("/", HTTP_GET, [](AsyncWebServerRequest *request) 
   {
@@ -153,20 +156,20 @@ void RTKRoverManager::startServer(AsyncWebServer *server)
   server->begin();
 }
   
-void RTKRoverManager::notFound(AsyncWebServerRequest *request) 
+void SmartHomeDeviceManager::notFound(AsyncWebServerRequest *request) 
 {
   request->send(404, "text/plain", "Not found");
 }
 
-void RTKRoverManager::actionRebootESP32(AsyncWebServerRequest *request) 
+void SmartHomeDeviceManager::actionRebootESP32(AsyncWebServerRequest *request) 
 {
   DBG.println("ACTION actionRebootESP32!");
-  request->send_P(200, "text/html", REBOOT_HTML, RTKRoverManager::processor);
+  request->send_P(200, "text/html", REBOOT_HTML, SmartHomeDeviceManager::processor);
   delay(3000);
   ESP.restart();
 }
 
-void RTKRoverManager::actionWipeData(AsyncWebServerRequest *request) 
+void SmartHomeDeviceManager::actionWipeData(AsyncWebServerRequest *request) 
 {
   DBG.println("ACTION actionWipeData!");
   int params = request->params();
@@ -189,7 +192,7 @@ void RTKRoverManager::actionWipeData(AsyncWebServerRequest *request)
   request->send_P(200, "text/html", INDEX_HTML, processor);
 }
 
-void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request) 
+void SmartHomeDeviceManager::actionUpdateData(AsyncWebServerRequest *request) 
 {
   DBG.println("ACTION actionUpdateData!");
 
@@ -215,45 +218,45 @@ void RTKRoverManager::actionUpdateData(AsyncWebServerRequest *request)
       } 
     }
 
-    if (strcmp(p->name().c_str(), PARAM_RTK_CASTER_HOST) == 0) 
+    if (strcmp(p->name().c_str(), PARAM_MQTT_BROKER_IP) == 0) 
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_RTK_CASTER_HOST, p->value().c_str());
+        writeFile(SPIFFS, PATH_MQTT_BROKER_IP, p->value().c_str());
       } 
     }
 
-    if (strcmp(p->name().c_str(), PARAM_RTK_CASTER_PORT) == 0) 
+    if (strcmp(p->name().c_str(), PARAM_MQTT_PUB_TOPIC_1) == 0) 
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_RTK_CASTER_PORT, p->value().c_str());
+        writeFile(SPIFFS, PATH_MQTT_PUB_TOPIC_1, p->value().c_str());
       } 
     }
 
-    if (strcmp(p->name().c_str(), PARAM_RTK_CASTER_USER) == 0) 
+    if (strcmp(p->name().c_str(), PARAM_MQTT_PUB_TOPIC_2) == 0) 
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_RTK_CASTER_USER, p->value().c_str());
+        writeFile(SPIFFS, PATH_MQTT_PUB_TOPIC_2, p->value().c_str());
       } 
     }
 
-    if (strcmp(p->name().c_str(), PARAM_RTK_MOINT_POINT) == 0) 
+    if (strcmp(p->name().c_str(), PARAM_MQTT_PUB_TOPIC_3) == 0) 
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_RTK_MOINT_POINT, p->value().c_str());
+        writeFile(SPIFFS, PATH_MQTT_PUB_TOPIC_3, p->value().c_str());
       } 
     }
 
   }
   DBG.println(F("Data saved to SPIFFS!"));
-  request->send_P(200, "text/html", INDEX_HTML, RTKRoverManager::processor);
+  request->send_P(200, "text/html", INDEX_HTML, SmartHomeDeviceManager::processor);
 }
 
 // Replaces placeholder with stored values
-String RTKRoverManager::processor(const String& var) 
+String SmartHomeDeviceManager::processor(const String& var) 
 {
   if (var == PARAM_WIFI_SSID) 
   {
@@ -266,28 +269,28 @@ String RTKRoverManager::processor(const String& var)
     return (savedPassword.isEmpty() ? String(PARAM_WIFI_PASSWORD) : "*******");
   }
 
-  else if (var == PARAM_RTK_CASTER_HOST) 
+  else if (var == PARAM_MQTT_BROKER_IP) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_RTK_CASTER_HOST);
-    return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_HOST) : savedCaster);
+    String savedCaster = readFile(SPIFFS, PATH_MQTT_BROKER_IP);
+    return (savedCaster.isEmpty() ? String(PARAM_MQTT_BROKER_IP) : savedCaster);
   }
 
-  else if (var == PARAM_RTK_CASTER_PORT) 
+  else if (var == PARAM_MQTT_PUB_TOPIC_1) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_RTK_CASTER_PORT);
-    return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_PORT) : savedCaster);
+    String savedCaster = readFile(SPIFFS, PATH_MQTT_PUB_TOPIC_1);
+    return (savedCaster.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_1) : savedCaster);
   }
 
-  else if (var == PARAM_RTK_CASTER_USER) 
+  else if (var == PARAM_MQTT_PUB_TOPIC_2) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_RTK_CASTER_USER);
-    return (savedCaster.isEmpty() ? String(PARAM_RTK_CASTER_USER) : savedCaster);
+    String savedCaster = readFile(SPIFFS, PATH_MQTT_PUB_TOPIC_2);
+    return (savedCaster.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_2) : savedCaster);
   }
 
-  else if (var == PARAM_RTK_MOINT_POINT) 
+  else if (var == PARAM_MQTT_PUB_TOPIC_3) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_RTK_MOINT_POINT);
-    return (savedCaster.isEmpty() ? String(PARAM_RTK_MOINT_POINT) : savedCaster);
+    String savedCaster = readFile(SPIFFS, PATH_MQTT_PUB_TOPIC_3);
+    return (savedCaster.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_3) : savedCaster);
   }
  
   else if (var == "next_addr") 
@@ -317,29 +320,33 @@ String RTKRoverManager::processor(const String& var)
                                 SPIFFS
 =================================================================================
 */
-bool RTKRoverManager::setupSPIFFS(bool formatIfFailed) 
+bool SmartHomeDeviceManager::setupSPIFFS() 
 {
-  bool success = false;
+  bool isMounted = false; 
 
-  #ifdef ESP32
-    if (SPIFFS.begin(formatIfFailed)) 
+  if ( !SPIFFS.begin(false) )
+  {
+    DBG.println("SPIFFS mount failed");
+    if ( !SPIFFS.begin(true) )
+      {
+        DBG.println("SPIFFS formatting failed");
+        return isMounted;
+      }
+      else
+      {
+        DBG.println("SPIFFS formatted");
+      }
+    } 
+    else
     {
-      DBG.println("SPIFFS file system successfully mounted");
-      success = true;
+      DBG.println("SPIFFS mounted");
+      isMounted = true;
     }
-  #else
-    if (!SPIFFS.begin()) 
-    {
-      DBG.println("An Error has occurred while mounting SPIFFS");
-      success = false;
-      return success;
-    }
-  #endif
 
-  return success;
+    return isMounted;
 }
 
-String RTKRoverManager::readFile(fs::FS &fs, const char* path) 
+String SmartHomeDeviceManager::readFile(fs::FS &fs, const char* path) 
 {
   DBG.printf("Reading file: %s\r\n", path);
   File file = fs.open(path, "r");
@@ -362,7 +369,7 @@ String RTKRoverManager::readFile(fs::FS &fs, const char* path)
   return fileContent;
 }
 
-void RTKRoverManager::writeFile(fs::FS &fs, const char* path, const char* message) 
+void SmartHomeDeviceManager::writeFile(fs::FS &fs, const char* path, const char* message) 
 {
   DBG.printf("Writing file: %s\r\n", path);
 
@@ -381,22 +388,21 @@ void RTKRoverManager::writeFile(fs::FS &fs, const char* path, const char* messag
   }
   file.close();
 }
-void RTKRoverManager::listFiles() 
+void SmartHomeDeviceManager::listFiles() 
 {
   File root = SPIFFS.open("/");
   File file = root.openNextFile();
  
   while (file) 
   {
-      DBG.print("FILE: ");
-      DBG.println(file.name());
+      readFile(SPIFFS, file.path());
       file = root.openNextFile();
   }
   file.close();
   root.close();
 }
 
-void RTKRoverManager::wipeSpiffsFiles() 
+void SmartHomeDeviceManager::wipeSpiffsFiles() 
 {
   File root = SPIFFS.open("/");
   File file = root.openNextFile();
@@ -412,7 +418,7 @@ void RTKRoverManager::wipeSpiffsFiles()
   }
 }
 
-String RTKRoverManager::getDeviceName(const String& prefix) 
+String SmartHomeDeviceManager::getDeviceName(const String& prefix) 
   {
     String deviceName((char *)0);
     String suffix = String(getChipId(), HEX);
@@ -422,13 +428,14 @@ String RTKRoverManager::getDeviceName(const String& prefix)
     
     deviceName.reserve(prefixLen + suffixLen);
     deviceName += prefix;
+    deviceName += "-";
     deviceName += suffix;
 
 
     return deviceName;
   }
 
-  uint32_t RTKRoverManager::getChipId() 
+  uint32_t SmartHomeDeviceManager::getChipId() 
   {
     uint32_t chipId = 0;
 

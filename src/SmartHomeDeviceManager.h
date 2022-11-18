@@ -1,7 +1,7 @@
 /**
- * @file    RTKRoverManager.h
+ * @file    SmartHomeDeviceManager.h
  * @author  jangleboom
- * @link    https://github.com/audio-communication-group/RTKRoverManager.git
+ * @link    https://github.com/audio-communication-group/SmartHomeDeviceManager.git
  * <br>
  * @brief   This is part of a distributed software, here: the web interface to config 
  *          the realtime kinematics rover
@@ -16,8 +16,8 @@
  *          https://medium.com/@adihendro/html-form-data-input-c942ba23224
  */
 
-#ifndef RTK_ROVER_MANAGER_H
-#define RTK_ROVER_MANAGER_H
+#ifndef SMART_HOME_DEVICE_MANAGER_H
+#define SMART_HOME_DEVICE_MANAGER_H
 
 #include <Arduino.h>
 #include <ESPmDNS.h>
@@ -25,7 +25,7 @@
 #include <index_html.h>
 #include <error_html.h>
 #include <reboot_html.h>
-#include <ManagerConfig.h>
+#include <SmartHomeDeviceManagerConfig.h>
 
 #ifdef ESP32
   #include <WiFi.h>
@@ -38,11 +38,11 @@
   #include <FS.h>
 #endif
 
-namespace RTKRoverManager 
+namespace SmartHomeDeviceManager 
 {
   // DEVICE_TYPE can be defined e. g. in a separate RTKRoverConfig.h file, if not use this here
   #ifndef DEVICE_TYPE
-  const char DEVICE_TYPE[] PROGMEM = "rtkrover";
+  const char DEVICE_TYPE[] PROGMEM = "smarthomedevice";
   #endif
   // WiFi credentials for AP mode
   #define MAX_SSIDS 10 // Space to scan and remember SSIDs
@@ -52,18 +52,23 @@ namespace RTKRoverManager
   #define FORMAT_SPIFFS_IF_FAILED true
   const char PARAM_WIFI_SSID[] PROGMEM = "ssid"; 
   const char PARAM_WIFI_PASSWORD[] PROGMEM = "password";
-  const char PARAM_RTK_CASTER_HOST[] PROGMEM = "caster_host";
-  const char PARAM_RTK_CASTER_PORT[] PROGMEM = "caster_port";
-  const char PARAM_RTK_CASTER_USER[] PROGMEM = "caster_user";
-  const char PARAM_RTK_MOINT_POINT[] PROGMEM = "mount_point";
+  const char PARAM_MQTT_BROKER_IP[] PROGMEM = "broker_ip";
+
+  const char PARAM_MQTT_PUB_TOPIC_1[] PROGMEM = "pub_topic_1";
+  const char PARAM_MQTT_PUB_TOPIC_2[] PROGMEM = "pub_topic_2";
+  const char PARAM_MQTT_PUB_TOPIC_3[] PROGMEM = "pub_topic_3";
+
+  // const char PARAM_MQTT_SUB_TOPIC_1[] PROGMEM = "sub_topic_1";
+  // const char PARAM_MQTT_SUB_TOPIC_2[] PROGMEM = "sub_topic_2";
+  // const char PARAM_MQTT_SUB_TOPIC_3[] PROGMEM = "sub_topic_3";
 
   // Paths for SPIFFS file management
   const char PATH_WIFI_SSID[] PROGMEM = "/ssid.txt";
   const char PATH_WIFI_PASSWORD[] PROGMEM = "/password.txt";
-  const char PATH_RTK_CASTER_HOST[] PROGMEM = "/caster_host";
-  const char PATH_RTK_CASTER_PORT[] PROGMEM = "/caster_port";
-  const char PATH_RTK_CASTER_USER[] PROGMEM = "/caster_user";
-  const char PATH_RTK_MOINT_POINT[] PROGMEM = "/mount_point";
+  const char PATH_MQTT_BROKER_IP[] PROGMEM = "/broker_ip.txt";
+  const char PATH_MQTT_PUB_TOPIC_1[] PROGMEM = "/pub_topic_1.txt";
+  const char PATH_MQTT_PUB_TOPIC_2[] PROGMEM = "/pub_topic_2.txt";
+  const char PATH_MQTT_PUB_TOPIC_3[] PROGMEM = "/pub_topic_3.txt";
   
   //===============================================================================
   // Wifi
@@ -167,11 +172,18 @@ namespace RTKRoverManager
   /**
    * @brief Just init SPIFFS for ESP32 or ESP8266
    * 
-   * @param format  True if SPIFFS should formated at start
    * @return true   If SPIFFS is successfully initialized
    *         false  If SPIFFS init failed
    */
-  bool setupSPIFFS(bool formatIfFailed);
+  bool setupSPIFFS();
+
+  /**
+   * @brief 
+   * 
+   * @return true   Formatting succeeded
+   * @return false  Formatting failed
+   */
+  bool formatSPIFFS(void);
 
   /**
    * @brief         Write data to SPIFFS
@@ -220,4 +232,4 @@ String getDeviceName(const String &prefix);
 uint32_t getChipId(void);
 
 }
-#endif /*** RTK_ROVER_MANAGER_H ***/
+#endif /*** SMART_HOME_DEVICE_MANAGER_H ***/

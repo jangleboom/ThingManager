@@ -1,11 +1,11 @@
-#ifndef RTK_ROVER_CONFIG_H
-#ifndef MANAGER_CONFIG_H
-#define MANAGER_CONFIG_H
+#ifndef SMART_HOME_DEVICE_CONFIG_H
+#ifndef SMART_HOME_DEVICE_MANAGER_CONFIG_H
+#define SMART_HOME_DEVICE_MANAGER_CONFIG_H
 #include <Arduino.h>
 
 /* 
 THIS WILL BE REPLACED BY THE RTKRoverConfig.h after including this project 
-as submodule into the RTKRover project under lib/
+as submodule into the Smart Home Device project under lib/
 */
 
 /******************************************************************************/
@@ -18,5 +18,5 @@ as submodule into the RTKRover project under lib/
 
 #define BAUD                          115200
 
-#endif  /*** MANAGER_CONFIG_H ***/
+#endif  /*** SMART_HOME_DEVICE_MANAGER_CONFIG_H ***/
 #endif

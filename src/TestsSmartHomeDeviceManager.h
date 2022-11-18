@@ -1,16 +1,16 @@
-#ifndef TESTS_RTK_ROVER_MANAGER_H
-#define TESTS_RTK_ROVER_MANAGER_H
+#ifndef TESTS_SMART_HOME_DEVICE_MANAGER_H
+#define TESTS_SMART_HOME_DEVICE_MANAGER_H
 
 #include <AUnit.h>
-#include <RTKRoverManager.h>
+#include <SmartHomeDeviceManager.h>
 
 using namespace aunit;
-using namespace RTKRoverManager;
+using namespace SmartHomeDeviceManager;
 
 test(processorWriteAndReadSpiffs) 
 {
     String testValue = "TestValue";
-    const char PATH_TEST_VALUE[] PROGMEM = "/pathTestValue";
+    const char PATH_TEST_VALUE[] PROGMEM = "/pathTestValue.txt";
     if (SPIFFS.exists(PATH_TEST_VALUE)) 
     {
         if (!SPIFFS.remove(PATH_TEST_VALUE))
@@ -24,4 +24,4 @@ test(processorWriteAndReadSpiffs)
     assertTrue(savedValue.equals(testValue));
 }
 
-#endif /*** TESTS_RTK_ROVER_MANAGER_H ***/
+#endif /*** TESTS_SMART_HOME_DEVICE_MANAGER_H ***/
