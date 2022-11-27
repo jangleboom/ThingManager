@@ -11,6 +11,8 @@ as submodule into the Smart Home Device project under lib/
 /******************************************************************************/
 //                       Default Serial settings
 /******************************************************************************/
+
+// #define SPIFFS LittleFS
 //set to true for debug output, false for no debug output
 #define DEBUGGING true 
 #define DBG \

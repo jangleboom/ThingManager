@@ -20,8 +20,8 @@
 #define SMART_HOME_DEVICE_MANAGER_H
 
 #include <Arduino.h>
-#include <ESPmDNS.h>
 #include <ESPAsyncWebServer.h>
+
 #include <index_html.h>
 #include <error_html.h>
 #include <reboot_html.h>
@@ -31,11 +31,13 @@
   #include <WiFi.h>
   #include <AsyncTCP.h>
   #include <SPIFFS.h>
+  #include <ESPmDNS.h>
 #else
   #include <ESP8266WiFi.h>
   #include <ESPAsyncTCP.h>
   #include <Hash.h>
   #include <FS.h>
+  #include "mdns.h"
 #endif
 
 namespace SmartHomeDeviceManager 

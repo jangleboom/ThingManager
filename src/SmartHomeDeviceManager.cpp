@@ -395,7 +395,12 @@ void SmartHomeDeviceManager::listFiles()
  
   while (file) 
   {
+#ifdef ESP8266
+      readFile(file.fullName());
+#endif
+#ifdef ESP32
       readFile(SPIFFS, file.path());
+#endif
       file = root.openNextFile();
   }
   file.close();
@@ -412,8 +417,15 @@ void SmartHomeDeviceManager::wipeSpiffsFiles()
   while (file) 
   {
     DBG.print("FILE: ");
-    DBG.println(file.path());
-    SPIFFS.remove(file.path());
+#if defined(ESP8266)
+    const char* PATH = file.fullName();
+#endif
+#if defined(ESP32)
+    const char* PATH = file.path();
+#endif
+    
+    DBG.println(PATH);
+    SPIFFS.remove(PATH);
     file = root.openNextFile();
   }
 }
@@ -437,12 +449,19 @@ String SmartHomeDeviceManager::getDeviceName(const String& prefix)
 
   uint32_t SmartHomeDeviceManager::getChipId() 
   {
-    uint32_t chipId = 0;
+    uint32_t chipID = 0;
+#ifdef ESP8266
+    chipID = ESP.getChipId();
+#endif
 
-    for(int i=0; i<17; i=i+8) {
-      chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+#ifdef ESP32
+    for (int i=0; i<17; i=i+8) 
+    {
+      chipID |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
     }
-      DBG.print("chipId: ");
-      DBG.println(chipId, HEX);
-      return chipId;
+      DBG.print("chipID: ");
+      DBG.println(chipID, HEX);
+#endif
+
+      return chipID;
   }
