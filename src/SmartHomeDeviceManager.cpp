@@ -105,7 +105,8 @@ void SmartHomeDeviceManager::setupWiFi(AsyncWebServer* server)
       DBG.print(F("Waiting for HotSpot "));
       DBG.print(lastSSID);
       DBG.println(F(" to appear..."));
-      vTaskDelay(1000/portTICK_RATE_MS);
+      // vTaskDelay(1000/portTICK_RATE_MS);
+      delay(1000);
     }
     setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
     delay(500);
