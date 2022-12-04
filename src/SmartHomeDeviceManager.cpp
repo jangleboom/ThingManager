@@ -6,8 +6,6 @@
 =================================================================================
 */
 
-#pragma region: WIFI
-
 bool SmartHomeDeviceManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) 
 {
   bool success = false;
@@ -36,9 +34,9 @@ bool SmartHomeDeviceManager::setupStationMode(const char* ssid, const char* pass
   return success;
 }
 
-bool SmartHomeDeviceManager::formatSPIFFS()
+bool SmartHomeDeviceManager::formatLittleFS()
 {
-  bool formatted = SPIFFS.format();
+  bool formatted = LittleFS.format();
  
   if (formatted) 
   {
@@ -55,8 +53,15 @@ bool SmartHomeDeviceManager::formatSPIFFS()
 bool SmartHomeDeviceManager::checkConnectionToWifiStation() 
 { 
   bool isConnectedToStation = false;
+  
+  int wifiStationMode;
+#ifdef ESP32
+  wifiStationMode = WIFI_MODE_STA;
+#else
+  wifiStationMode = WIFI_STA;
+#endif
 
-  if (WiFi.getMode() == WIFI_MODE_STA)
+  if (WiFi.getMode() == wifiStationMode)
   {
     if (WiFi.status() != WL_CONNECTED) 
     {
@@ -76,31 +81,61 @@ bool SmartHomeDeviceManager::checkConnectionToWifiStation()
 void SmartHomeDeviceManager::setupAPMode(const char* apSsid, const char* apPassword) 
 {
   DBG.print("Setting soft-AP ... ");
-  WiFi.disconnect();
-  WiFi.mode(WIFI_AP);
-  bool result = WiFi.softAP(apSsid, apPassword);
-  DBG.println(result ? "Ready" : "Failed!");
-  DBG.print(F("Access point started: "));
-  DBG.println(apSsid);
-  DBG.print(F("IP address: "));
-  DBG.println(WiFi.softAPIP());
+  // WiFi.disconnect();
+  WiFiMode_t wifiAPMode;
+#ifdef ESP32
+  wifiAPMode = WIFI_MODE_AP;
+  WiFi.mode(WIFI_MODE_AP);
+#else
+  wifiAPMode = WIFI_AP;
+#endif
+
+bool result = WiFi.softAP(apSsid, apPassword);
+
+if (WiFi.getMode() == wifiAPMode)
+  {
+    DBG.print(F("Set to WIFI_AP mode."));
+    
+    if (result == true)
+    {
+      DBG.print(F("Access point started: "));
+      DBG.println(apSsid);
+      DBG.print(F("IP address: "));
+      IPAddress apIP = WiFi.softAPIP();
+      DBG.println(apIP);
+    }
+    else
+    {
+      DBG.print(F("Access point could not started."));
+    }
+  } 
+  else
+  {
+    DBG.print(F("Set to WIFI_AP mode failed! "));
+  }
+// DBG.print("wait a minute");
+// while(true){};
 }
 
 void SmartHomeDeviceManager::setupWiFi(AsyncWebServer* server)
 {
+  WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
+  WiFi.disconnect(true);       // STA sollte noch verbunden sein
+
   // Check if we have credentials for a available network
-  String lastSSID = readFile(SPIFFS, PATH_WIFI_SSID);
-  String lastPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
+  String lastSSID = readFile(LittleFS, PATH_WIFI_SSID);
+  String lastPassword = readFile(LittleFS, PATH_WIFI_PASSWORD);
 
   if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
   {
     setupAPMode(getDeviceName(DEVICE_TYPE).c_str(), AP_PASSWORD);
+    delay(500);
     startServer(server);
     delay(500);
   } 
   else
   {
-    while (! savedNetworkAvailable(lastSSID)) 
+    while ( !savedNetworkAvailable(lastSSID) ) 
     {
       DBG.print(F("Waiting for HotSpot "));
       DBG.print(lastSSID);
@@ -134,9 +169,6 @@ bool SmartHomeDeviceManager::savedNetworkAvailable(const String& ssid)
   }
   return false;
 }
-
-#pragma endregion
-
 /*
 =================================================================================
                                 Web server
@@ -149,11 +181,11 @@ void SmartHomeDeviceManager::startServer(AsyncWebServer *server)
     request->send_P(200, "text/html", INDEX_HTML, processor);
   });
 
-  server->on("/actionUpdateData", HTTP_POST, actionUpdateData);
-  server->on("/actionWipeData", HTTP_POST, actionWipeData);
-  server->on("/actionRebootESP32", HTTP_POST, actionRebootESP32);
+  // server->on("/actionUpdateData", HTTP_POST, actionUpdateData);
+  // server->on("/actionWipeData", HTTP_POST, actionWipeData);
+  // server->on("/actionRebootESP32", HTTP_POST, actionRebootESP32);
 
-  server->onNotFound(notFound);
+  // server->onNotFound(notFound);
   server->begin();
 }
   
@@ -184,12 +216,12 @@ void SmartHomeDeviceManager::actionWipeData(AsyncWebServerRequest *request)
       if (p->value().length() > 0) 
       {
         DBG.printf("wipe command received: %s",p->value().c_str());
-        wipeSpiffsFiles();
+        wipeLittleFsFiles();
       } 
      }
     } 
 
-  DBG.print(F("Data in SPIFFS was wiped out!"));
+  DBG.print(F("Data in LittleFS was wiped out!"));
   request->send_P(200, "text/html", INDEX_HTML, processor);
 }
 
@@ -207,7 +239,7 @@ void SmartHomeDeviceManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_WIFI_SSID, p->value().c_str());
+        writeFile(LittleFS, PATH_WIFI_SSID, p->value().c_str());
       } 
     }
 
@@ -215,7 +247,7 @@ void SmartHomeDeviceManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_WIFI_PASSWORD, p->value().c_str());
+        writeFile(LittleFS, PATH_WIFI_PASSWORD, p->value().c_str());
       } 
     }
 
@@ -223,7 +255,7 @@ void SmartHomeDeviceManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_MQTT_BROKER_IP, p->value().c_str());
+        writeFile(LittleFS, PATH_MQTT_BROKER_IP, p->value().c_str());
       } 
     }
 
@@ -231,7 +263,7 @@ void SmartHomeDeviceManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_MQTT_PUB_TOPIC_1, p->value().c_str());
+        writeFile(LittleFS, PATH_MQTT_PUB_TOPIC_1, p->value().c_str());
       } 
     }
 
@@ -239,7 +271,7 @@ void SmartHomeDeviceManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_MQTT_PUB_TOPIC_2, p->value().c_str());
+        writeFile(LittleFS, PATH_MQTT_PUB_TOPIC_2, p->value().c_str());
       } 
     }
 
@@ -247,12 +279,43 @@ void SmartHomeDeviceManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(SPIFFS, PATH_MQTT_PUB_TOPIC_3, p->value().c_str());
+        writeFile(LittleFS, PATH_MQTT_PUB_TOPIC_3, p->value().c_str());
+      } 
+    }
+    if (strcmp(p->name().c_str(), PARAM_MQTT_SUB_TOPIC_1) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, PATH_MQTT_SUB_TOPIC_1, p->value().c_str());
       } 
     }
 
+    if (strcmp(p->name().c_str(), PARAM_MQTT_SUB_TOPIC_2) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, PATH_MQTT_SUB_TOPIC_2, p->value().c_str());
+      } 
+    }
+
+    if (strcmp(p->name().c_str(), PARAM_MQTT_SUB_TOPIC_3) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, PATH_MQTT_SUB_TOPIC_3, p->value().c_str());
+      } 
+    }
+
+    if (strcmp(p->name().c_str(), PARAM_SLEEP_TIME_SEC) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, PATH_SLEEP_TIME_SEC, p->value().c_str());
+      } 
+    }
   }
-  DBG.println(F("Data saved to SPIFFS!"));
+
+  DBG.println(F("Data saved to LittleFS!"));
   request->send_P(200, "text/html", INDEX_HTML, SmartHomeDeviceManager::processor);
 }
 
@@ -261,43 +324,66 @@ String SmartHomeDeviceManager::processor(const String& var)
 {
   if (var == PARAM_WIFI_SSID) 
   {
-    String savedSSID = readFile(SPIFFS, PATH_WIFI_SSID);
+    String savedSSID = readFile(LittleFS, PATH_WIFI_SSID);
     return (savedSSID.isEmpty() ? String(PARAM_WIFI_SSID) : savedSSID);
   }
   else if (var == PARAM_WIFI_PASSWORD) 
   {
-    String savedPassword = readFile(SPIFFS, PATH_WIFI_PASSWORD);
+    String savedPassword = readFile(LittleFS, PATH_WIFI_PASSWORD);
     return (savedPassword.isEmpty() ? String(PARAM_WIFI_PASSWORD) : "*******");
   }
 
   else if (var == PARAM_MQTT_BROKER_IP) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_MQTT_BROKER_IP);
-    return (savedCaster.isEmpty() ? String(PARAM_MQTT_BROKER_IP) : savedCaster);
+    String savedBroker = readFile(LittleFS, PATH_MQTT_BROKER_IP);
+    return (savedBroker.isEmpty() ? String(PARAM_MQTT_BROKER_IP) : savedBroker);
   }
 
   else if (var == PARAM_MQTT_PUB_TOPIC_1) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_MQTT_PUB_TOPIC_1);
-    return (savedCaster.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_1) : savedCaster);
+    String savedPubTopic = readFile(LittleFS, PATH_MQTT_PUB_TOPIC_1);
+    return (savedPubTopic.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_1) : savedPubTopic);
   }
 
   else if (var == PARAM_MQTT_PUB_TOPIC_2) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_MQTT_PUB_TOPIC_2);
-    return (savedCaster.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_2) : savedCaster);
+    String savedPubTopic = readFile(LittleFS, PATH_MQTT_PUB_TOPIC_2);
+    return (savedPubTopic.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_2) : savedPubTopic);
   }
 
   else if (var == PARAM_MQTT_PUB_TOPIC_3) 
   {
-    String savedCaster = readFile(SPIFFS, PATH_MQTT_PUB_TOPIC_3);
-    return (savedCaster.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_3) : savedCaster);
+    String savedPubTopic = readFile(LittleFS, PATH_MQTT_PUB_TOPIC_3);
+    return (savedPubTopic.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_3) : savedPubTopic);
+  }
+  else if (var == PARAM_MQTT_SUB_TOPIC_1) 
+  {
+    String savedSubTopic = readFile(LittleFS, PATH_MQTT_SUB_TOPIC_1);
+    return (savedSubTopic.isEmpty() ? String(PARAM_MQTT_SUB_TOPIC_1) : savedSubTopic);
+  }
+
+  else if (var == PARAM_MQTT_SUB_TOPIC_2) 
+  {
+    String savedSubTopic = readFile(LittleFS, PATH_MQTT_SUB_TOPIC_2);
+    return (savedSubTopic.isEmpty() ? String(PARAM_MQTT_SUB_TOPIC_2) : savedSubTopic);
+  }
+
+  else if (var == PARAM_MQTT_SUB_TOPIC_3) 
+  {
+    String savedSubTopic = readFile(LittleFS, PATH_MQTT_SUB_TOPIC_3);
+    return (savedSubTopic.isEmpty() ? String(PARAM_MQTT_SUB_TOPIC_3) : savedSubTopic);
+  }
+
+  else if (var == PARAM_SLEEP_TIME_SEC) 
+  {
+    String savedSleepTime = readFile(LittleFS, PATH_SLEEP_TIME_SEC);
+    return (savedSleepTime.isEmpty() ? String(PARAM_SLEEP_TIME_SEC) : savedSleepTime);
   }
  
   else if (var == "next_addr") 
   {
-    String savedSSID = readFile(SPIFFS, PATH_WIFI_SSID);
-    String savedPW = readFile(SPIFFS, PATH_WIFI_PASSWORD);
+    String savedSSID = readFile(LittleFS, PATH_WIFI_SSID);
+    String savedPW = readFile(LittleFS, PATH_WIFI_PASSWORD);
     if (savedSSID.isEmpty() || savedPW.isEmpty()) 
     {
       return String(IP_AP);
@@ -310,7 +396,7 @@ String SmartHomeDeviceManager::processor(const String& var)
   }
   else if (var == "next_ssid") 
   {
-    String savedSSID = readFile(SPIFFS, PATH_WIFI_SSID);
+    String savedSSID = readFile(LittleFS, PATH_WIFI_SSID);
     return (savedSSID.isEmpty() ? getDeviceName(DEVICE_TYPE) : savedSSID);
   }
   return String();
@@ -318,45 +404,38 @@ String SmartHomeDeviceManager::processor(const String& var)
 
 /*
 =================================================================================
-                                SPIFFS
+                                LittleFS
 =================================================================================
 */
-bool SmartHomeDeviceManager::setupSPIFFS() 
+bool SmartHomeDeviceManager::setupLittleFS() 
 {
   bool isMounted = false; 
 
-  if ( !SPIFFS.begin(false) )
+  if ( !LittleFS.begin() ) 
   {
-    DBG.println("SPIFFS mount failed");
-    if ( !SPIFFS.begin(true) )
-      {
-        DBG.println("SPIFFS formatting failed");
-        return isMounted;
-      }
-      else
-      {
-        DBG.println("SPIFFS formatted");
-      }
-    } 
-    else
-    {
-      DBG.println("SPIFFS mounted");
-      isMounted = true;
-    }
-
+    Serial.println(F("An Error has occurred while mounting LittleFS"));
     return isMounted;
+  } 
+  else
+  {
+    DBG.println("LittleFS mounted");
+    isMounted = true;
+  }
+
+  return isMounted;
 }
 
 String SmartHomeDeviceManager::readFile(fs::FS &fs, const char* path) 
 {
   DBG.printf("Reading file: %s\r\n", path);
-  File file = fs.open(path, "r");
+  File file = fs.open(path, FILE_READ);
 
   if (!file || file.isDirectory()) 
   {
     DBG.println("- empty file or failed to open file");
     return String();
   }
+
   DBG.println("- read from file:");
   String fileContent;
 
@@ -374,7 +453,7 @@ void SmartHomeDeviceManager::writeFile(fs::FS &fs, const char* path, const char*
 {
   DBG.printf("Writing file: %s\r\n", path);
 
-  File file = fs.open(path, "w");
+  File file = fs.open(path, FILE_WRITE);
   if (!file) 
   {
     DBG.println("- failed to open file for writing");
@@ -389,28 +468,35 @@ void SmartHomeDeviceManager::writeFile(fs::FS &fs, const char* path, const char*
   }
   file.close();
 }
+
 void SmartHomeDeviceManager::listFiles() 
 {
-  File root = SPIFFS.open("/");
+  File root = LittleFS.open(ROOT_DIR, FILE_READ);
   File file = root.openNextFile();
  
-  while (file) 
+  while (file)
   {
-#ifdef ESP8266
-      readFile(file.fullName());
-#endif
-#ifdef ESP32
-      readFile(SPIFFS, file.path());
-#endif
+      DBG.print(F("File name: "));
+      DBG.print(file.name());
+      DBG.print(F(", content: "));
+      String fileContent;
+
+      while (file.available()) 
+      {
+        fileContent += String((char)file.read());
+      }
+      file.close();
+      DBG.println(fileContent);
+ 
       file = root.openNextFile();
   }
   file.close();
   root.close();
 }
 
-void SmartHomeDeviceManager::wipeSpiffsFiles() 
+void SmartHomeDeviceManager::wipeLittleFsFiles() 
 {
-  File root = SPIFFS.open("/");
+  File root = LittleFS.open(ROOT_DIR, FILE_WRITE);
   File file = root.openNextFile();
 
   DBG.println(F("Wiping: "));
@@ -426,7 +512,8 @@ void SmartHomeDeviceManager::wipeSpiffsFiles()
 #endif
     
     DBG.println(PATH);
-    SPIFFS.remove(PATH);
+    file.close();
+    LittleFS.remove(PATH);
     file = root.openNextFile();
   }
 }

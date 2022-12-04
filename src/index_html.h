@@ -7,7 +7,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
 <head>
     <meta content="text/html" ; charset="UTF-8" ; http-equiv="content-type">
     <meta name="viewport" content="width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
-    <title>RTK rover setup</title>
+    <title>Setup</title>
     <style>
         body 
         {
@@ -154,7 +154,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
                         <tr>
                         <td style="text-align:left;">Sleep time, s:</td>
                         <td>
-                            <input class="text_field" form="Form1" type="text" maxlength="30" name="sleep_time" placeholder=%sleep_time% style="text-align:center;">
+                            <input class="text_field" form="Form1" type="text" maxlength="30" name="sleep_time_sec" placeholder=%sleep_time_sec% style="text-align:center;">
                         </td>
 
                     </tr>

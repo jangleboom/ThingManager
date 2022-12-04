@@ -2,7 +2,7 @@
 #define REBOOT_HTML_H
 
 
-const char REBOOT_HTML[] PROGMEM = R"rawliteral(
+const char REBOOT_HTML[] PROGMEM = R"(
 <!DOCTYPE HTML>
 <html>
 
@@ -29,25 +29,6 @@ const char REBOOT_HTML[] PROGMEM = R"rawliteral(
             accent-color: #F0A03C;
         }
     </style>
-
-    <script type="text/javascript">
-        let duration = 5
-        var timeleft = duration;
-        var downloadTimer = setInterval(function() {
-            
-            if (timeleft <= -1) {
-                clearInterval(downloadTimer);
-            }
-
-            document.getElementById("progressBar").value = duration - timeleft;
-            let label = `in ${timeleft} second(s)`;
-            document.getElementById("countdown").innerHTML = label;
-            if ((timeleft) == -1) {
-                document.getElementById("countdown").innerHTML = "(You can close this now.)";
-            }
-            timeleft -= 1;
-        }, 1000);
-    </script>
 </head>
 
 <body>
@@ -68,7 +49,7 @@ const char REBOOT_HTML[] PROGMEM = R"rawliteral(
 
 </html>
 
-)rawliteral";
+)";
 
 
 #endif /* HTML_H */

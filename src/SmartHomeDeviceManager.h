@@ -10,9 +10,9 @@
  *          - a check for special characters in the form
  *          - a check of the number of decimal places in the input of the geo-coordinates 
  *            with regard to a suitable level of accuracy
- *          - upload html and (separated css and js) to SPIFFS 
+ *          - upload html and (separated css and js) to LittleFS 
  * 
- * @note    FYI: A good tutorial about how to transfer input data from a from and save them to SPIFFS
+ * @note    FYI: A good tutorial about how to transfer input data from a from and save them to LittleFS
  *          https://medium.com/@adihendro/html-form-data-input-c942ba23224
  */
 
@@ -21,56 +21,70 @@
 
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
+#include <SmartHomeDeviceManagerConfig.h>
+
+#define USE_LittleFS
+#ifdef USE_LittleFS
+	#include <FS.h>
+	#define SPIFFS LittleFS
+	#include <LittleFS.h> 
+ #endif
 
 #include <index_html.h>
 #include <error_html.h>
 #include <reboot_html.h>
-#include <SmartHomeDeviceManagerConfig.h>
 
 #ifdef ESP32
   #include <WiFi.h>
   #include <AsyncTCP.h>
-  #include <SPIFFS.h>
   #include <ESPmDNS.h>
 #else
   #include <ESP8266WiFi.h>
   #include <ESPAsyncTCP.h>
   #include <Hash.h>
-  #include <FS.h>
-  #include "mdns.h"
+  #include <ESP8266mDNS.h>
 #endif
 
 namespace SmartHomeDeviceManager 
 {
-  // DEVICE_TYPE can be defined e. g. in a separate RTKRoverConfig.h file, if not use this here
+  // LittleFS
+  #define FILE_WRITE                              "w"
+  #define FILE_READ                               "r"
+  #define ROOT_DIR                                "/"
+
+  // DEVICE_TYPE can be defined e. g. in a separate SmartHomeDeviceConfig.h file, if not use this here
   #ifndef DEVICE_TYPE
-  const char DEVICE_TYPE[] PROGMEM = "smarthomedevice";
+  static const char DEVICE_TYPE[]            PROGMEM = "smarthomedevice";
   #endif
+
   // WiFi credentials for AP mode
   #define MAX_SSIDS 10 // Space to scan and remember SSIDs
-  const char AP_PASSWORD[] PROGMEM = "12345678";
-  const char IP_AP[] PROGMEM = "192.168.4.1";
-  // Parameters for SPIFFS file management
-  #define FORMAT_SPIFFS_IF_FAILED true
-  const char PARAM_WIFI_SSID[] PROGMEM = "ssid"; 
-  const char PARAM_WIFI_PASSWORD[] PROGMEM = "password";
-  const char PARAM_MQTT_BROKER_IP[] PROGMEM = "broker_ip";
+  static const char AP_PASSWORD[]             PROGMEM = "12345678";
+  static const char IP_AP[]                   PROGMEM = "192.168.4.1";
 
-  const char PARAM_MQTT_PUB_TOPIC_1[] PROGMEM = "pub_topic_1";
-  const char PARAM_MQTT_PUB_TOPIC_2[] PROGMEM = "pub_topic_2";
-  const char PARAM_MQTT_PUB_TOPIC_3[] PROGMEM = "pub_topic_3";
+  // Parameters for LittleFS file management
+  static const char PARAM_WIFI_SSID[]         PROGMEM = "ssid"; 
+  static const char PARAM_WIFI_PASSWORD[]     PROGMEM = "password";
+  static const char PARAM_MQTT_BROKER_IP[]    PROGMEM = "broker_ip";
+  static const char PARAM_MQTT_PUB_TOPIC_1[]  PROGMEM = "pub_topic_1";
+  static const char PARAM_MQTT_PUB_TOPIC_2[]  PROGMEM = "pub_topic_2";
+  static const char PARAM_MQTT_PUB_TOPIC_3[]  PROGMEM = "pub_topic_3";
+  static const char PARAM_MQTT_SUB_TOPIC_1[]  PROGMEM = "sub_topic_1";
+  static const char PARAM_MQTT_SUB_TOPIC_2[]  PROGMEM = "sub_topic_2";
+  static const char PARAM_MQTT_SUB_TOPIC_3[]  PROGMEM = "sub_topic_3";
+  static const char PARAM_SLEEP_TIME_SEC[]    PROGMEM = "sleep_time_sec";
 
-  // const char PARAM_MQTT_SUB_TOPIC_1[] PROGMEM = "sub_topic_1";
-  // const char PARAM_MQTT_SUB_TOPIC_2[] PROGMEM = "sub_topic_2";
-  // const char PARAM_MQTT_SUB_TOPIC_3[] PROGMEM = "sub_topic_3";
-
-  // Paths for SPIFFS file management
-  const char PATH_WIFI_SSID[] PROGMEM = "/ssid.txt";
-  const char PATH_WIFI_PASSWORD[] PROGMEM = "/password.txt";
-  const char PATH_MQTT_BROKER_IP[] PROGMEM = "/broker_ip.txt";
-  const char PATH_MQTT_PUB_TOPIC_1[] PROGMEM = "/pub_topic_1.txt";
-  const char PATH_MQTT_PUB_TOPIC_2[] PROGMEM = "/pub_topic_2.txt";
-  const char PATH_MQTT_PUB_TOPIC_3[] PROGMEM = "/pub_topic_3.txt";
+  // Paths for LittleFS file management
+  static const char* PATH_WIFI_SSID           PROGMEM = "/ssid.txt";
+  static const char* PATH_WIFI_PASSWORD       PROGMEM = "/password.txt";
+  static const char* PATH_MQTT_BROKER_IP      PROGMEM = "/broker_ip.txt";
+  static const char* PATH_MQTT_PUB_TOPIC_1    PROGMEM = "/pub_topic_1.txt";
+  static const char* PATH_MQTT_PUB_TOPIC_2    PROGMEM = "/pub_topic_2.txt";
+  static const char* PATH_MQTT_PUB_TOPIC_3    PROGMEM = "/pub_topic_3.txt";
+  static const char* PATH_MQTT_SUB_TOPIC_1    PROGMEM = "/sub_topic_1.txt";
+  static const char* PATH_MQTT_SUB_TOPIC_2    PROGMEM = "/sub_topic_2.txt";
+  static const char* PATH_MQTT_SUB_TOPIC_3    PROGMEM = "/sub_topic_3.txt";
+  static const char* PATH_SLEEP_TIME_SEC      PROGMEM = "/sleep_time_sec.txt";
   
   //===============================================================================
   // Wifi
@@ -94,7 +108,7 @@ namespace SmartHomeDeviceManager
   void setupAPMode(const char* apSsid, const char* apPassword);
 
   /**
-   * @brief Setup WiFi: Access point on first run (if no credentials saved in SPIFFS),
+   * @brief Setup WiFi: Access point on first run (if no credentials saved in LittleFS),
    *        if this is the case you must enter your wifi credentials into the web form 
    *        (192.168.4.1 is default IP) and reboot. You can change the WiFi credentials
    *        while connected via the web form or press the wipe button to delete the memory.
@@ -118,7 +132,7 @@ namespace SmartHomeDeviceManager
   /**
    * @brief Check possibility of connecting with an availbale network.
    * 
-   * @param ssid        SSID of saved network in SPIFFS
+   * @param ssid        SSID of saved network in LittleFS
    * @return true       If the credentials are complete and the network is available.
    * @return false      If the credentials are incomplete or the network is not available.
    */
@@ -149,7 +163,7 @@ namespace SmartHomeDeviceManager
   void notFound(AsyncWebServerRequest *request);
 
   /**
-   * @brief Action to handle wipe SPIFFS button
+   * @brief Action to handle wipe LittleFS button
    * 
    * @param request Request
    */
@@ -170,14 +184,14 @@ namespace SmartHomeDeviceManager
   void actionUpdateData(AsyncWebServerRequest *request);
 
   //===============================================================================
-  // SPIFFS
+  // LittleFS
   /**
-   * @brief Just init SPIFFS for ESP32 or ESP8266
+   * @brief Just init LittleFS for ESP32 or ESP8266
    * 
-   * @return true   If SPIFFS is successfully initialized
-   *         false  If SPIFFS init failed
+   * @return true   If LittleFS is successfully initialized
+   *         false  If LittleFS init failed
    */
-  bool setupSPIFFS();
+  bool setupLittleFS();
 
   /**
    * @brief 
@@ -185,10 +199,10 @@ namespace SmartHomeDeviceManager
    * @return true   Formatting succeeded
    * @return false  Formatting failed
    */
-  bool formatSPIFFS(void);
+  bool formatLittleFS(void);
 
   /**
-   * @brief         Write data to SPIFFS
+   * @brief         Write data to LittleFS
    * 
    * @param fs      Address of file system
    * @param path    Path to file
@@ -197,7 +211,7 @@ namespace SmartHomeDeviceManager
   void writeFile(fs::FS &fs, const char* path, const char* message);
 
   /**
-   * @brief           Read data from SPIFFS
+   * @brief           Read data from LittleFS
    * 
    * @param fs        Address of file system
    * @param path      Path to file
@@ -206,16 +220,16 @@ namespace SmartHomeDeviceManager
   String readFile(fs::FS &fs, const char* path);
 
   /**
-   * @brief List all saved SPIFFS files 
+   * @brief List all saved LittleFS files 
    * 
    */
   void listFiles(void);
 
   /**
-   * @brief Delete all saved SPIFFS files 
+   * @brief Delete all saved LittleFS files 
    * 
    */
-  void wipeSpiffsFiles(void);
+  void wipeLittleFsFiles(void);
 
 /**
  * @brief Get the unique Device Name 
