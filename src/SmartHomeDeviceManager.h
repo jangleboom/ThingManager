@@ -22,13 +22,8 @@
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
 #include <SmartHomeDeviceManagerConfig.h>
-
-#define USE_LittleFS
-#ifdef USE_LittleFS
-	#include <FS.h>
-	#define SPIFFS LittleFS
-	#include <LittleFS.h> 
- #endif
+#include <LittleFS.h> 
+#include <FS.h>
 
 #include <index_html.h>
 #include <error_html.h>
@@ -43,6 +38,8 @@
   #include <ESPAsyncTCP.h>
   #include <Hash.h>
   #include <ESP8266mDNS.h>
+  // #define PROGMEM   ICACHE_RODATA_ATTR
+  // #define ICACHE_RODATA_ATTR  __attribute__((section(".irom.text")))
 #endif
 
 namespace SmartHomeDeviceManager 
@@ -85,8 +82,14 @@ namespace SmartHomeDeviceManager
   const char PATH_MQTT_SUB_TOPIC_2[]    PROGMEM = "/sub_topic_2.txt";
   const char PATH_MQTT_SUB_TOPIC_3[]    PROGMEM = "/sub_topic_3.txt";
   const char PATH_SLEEP_TIME_SEC[]      PROGMEM = "/sleep_time_sec.txt";
-
   
+//   // Initialize Table of paths & params
+// const char* const path_table[] PROGMEM = { AP_PASSWORD, IP_AP, path_2, path_3, path_4, path_5, path_6 };
+// enum ProgmemContent
+// {
+//   AP_PASSWORD
+
+// }
   //===============================================================================
   // Wifi
   /**

@@ -181,11 +181,11 @@ void SmartHomeDeviceManager::startServer(AsyncWebServer *server)
     request->send_P(200, "text/html", INDEX_HTML, processor);
   });
 
-  // server->on("/actionUpdateData", HTTP_POST, actionUpdateData);
-  // server->on("/actionWipeData", HTTP_POST, actionWipeData);
-  // server->on("/actionRebootESP32", HTTP_POST, actionRebootESP32);
+  server->on("/actionUpdateData", HTTP_POST, actionUpdateData);
+  server->on("/actionWipeData", HTTP_POST, actionWipeData);
+  server->on("/actionRebootESP32", HTTP_POST, actionRebootESP32);
 
-  // server->onNotFound(notFound);
+  server->onNotFound(notFound);
   server->begin();
 }
   
@@ -432,7 +432,7 @@ String SmartHomeDeviceManager::readFile(fs::FS &fs, const char* path)
   DBG.printf("Reading file: %s\r\n", path);
   File file = fs.open(path, FILE_READ);
 
-  if (!file || file.isDirectory()) 
+  if ( !file || file.isDirectory() ) 
   {
     DBG.println("- empty file or failed to open file");
     return String();
@@ -441,9 +441,9 @@ String SmartHomeDeviceManager::readFile(fs::FS &fs, const char* path)
   DBG.println("- read from file:");
   String fileContent;
 
-  while (file.available()) 
+  while ( file.available() ) 
   {
-    fileContent += String((char)file.read());
+    fileContent += String( (char) file.read() );
   }
   file.close();
   DBG.println(fileContent);
