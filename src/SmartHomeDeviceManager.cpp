@@ -311,6 +311,8 @@ void SmartHomeDeviceManager::actionUpdateData(AsyncWebServerRequest *request)
       if (p->value().length() > 0) 
       {
         writeFile(LittleFS, PATH_SLEEP_TIME_SEC, p->value().c_str());
+        DBG.print("write PARAM_SLEEP_TIME_SEC: ");
+        DBG.println("p->value().c_str()");
       } 
     }
   }

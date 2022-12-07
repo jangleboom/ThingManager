@@ -59,32 +59,33 @@ namespace SmartHomeDeviceManager
 
   // WiFi credentials for AP mode
   #define MAX_SSIDS 10 // Space to scan and remember SSIDs
-  static const char AP_PASSWORD[]             PROGMEM = "12345678";
-  static const char IP_AP[]                   PROGMEM = "192.168.4.1";
+  const char AP_PASSWORD[]             PROGMEM = "12345678";
+  const char IP_AP[]                   PROGMEM = "192.168.4.1";
 
   // Parameters for LittleFS file management
-  static const char PARAM_WIFI_SSID[]         PROGMEM = "ssid"; 
-  static const char PARAM_WIFI_PASSWORD[]     PROGMEM = "password";
-  static const char PARAM_MQTT_BROKER_IP[]    PROGMEM = "broker_ip";
-  static const char PARAM_MQTT_PUB_TOPIC_1[]  PROGMEM = "pub_topic_1";
-  static const char PARAM_MQTT_PUB_TOPIC_2[]  PROGMEM = "pub_topic_2";
-  static const char PARAM_MQTT_PUB_TOPIC_3[]  PROGMEM = "pub_topic_3";
-  static const char PARAM_MQTT_SUB_TOPIC_1[]  PROGMEM = "sub_topic_1";
-  static const char PARAM_MQTT_SUB_TOPIC_2[]  PROGMEM = "sub_topic_2";
-  static const char PARAM_MQTT_SUB_TOPIC_3[]  PROGMEM = "sub_topic_3";
-  static const char PARAM_SLEEP_TIME_SEC[]    PROGMEM = "sleep_time_sec";
+  const char PARAM_WIFI_SSID[]         PROGMEM = "ssid"; 
+  const char PARAM_WIFI_PASSWORD[]     PROGMEM = "password";
+  const char PARAM_MQTT_BROKER_IP[]    PROGMEM = "broker_ip";
+  const char PARAM_MQTT_PUB_TOPIC_1[]  PROGMEM = "pub_topic_1";
+  const char PARAM_MQTT_PUB_TOPIC_2[]  PROGMEM = "pub_topic_2";
+  const char PARAM_MQTT_PUB_TOPIC_3[]  PROGMEM = "pub_topic_3";
+  const char PARAM_MQTT_SUB_TOPIC_1[]  PROGMEM = "sub_topic_1";
+  const char PARAM_MQTT_SUB_TOPIC_2[]  PROGMEM = "sub_topic_2";
+  const char PARAM_MQTT_SUB_TOPIC_3[]  PROGMEM = "sub_topic_3";
+  const char PARAM_SLEEP_TIME_SEC[]    PROGMEM = "sleep_time_sec";
 
   // Paths for LittleFS file management
-  static const char* PATH_WIFI_SSID           PROGMEM = "/ssid.txt";
-  static const char* PATH_WIFI_PASSWORD       PROGMEM = "/password.txt";
-  static const char* PATH_MQTT_BROKER_IP      PROGMEM = "/broker_ip.txt";
-  static const char* PATH_MQTT_PUB_TOPIC_1    PROGMEM = "/pub_topic_1.txt";
-  static const char* PATH_MQTT_PUB_TOPIC_2    PROGMEM = "/pub_topic_2.txt";
-  static const char* PATH_MQTT_PUB_TOPIC_3    PROGMEM = "/pub_topic_3.txt";
-  static const char* PATH_MQTT_SUB_TOPIC_1    PROGMEM = "/sub_topic_1.txt";
-  static const char* PATH_MQTT_SUB_TOPIC_2    PROGMEM = "/sub_topic_2.txt";
-  static const char* PATH_MQTT_SUB_TOPIC_3    PROGMEM = "/sub_topic_3.txt";
-  static const char* PATH_SLEEP_TIME_SEC      PROGMEM = "/sleep_time_sec.txt";
+  const char PATH_WIFI_SSID[]           PROGMEM = "/ssid.txt";
+  const char PATH_WIFI_PASSWORD[]       PROGMEM = "/password.txt";
+  const char PATH_MQTT_BROKER_IP[]      PROGMEM = "/broker_ip.txt";
+  const char PATH_MQTT_PUB_TOPIC_1[]    PROGMEM = "/pub_topic_1.txt";
+  const char PATH_MQTT_PUB_TOPIC_2[]    PROGMEM = "/pub_topic_2.txt";
+  const char PATH_MQTT_PUB_TOPIC_3[]    PROGMEM = "/pub_topic_3.txt";
+  const char PATH_MQTT_SUB_TOPIC_1[]    PROGMEM = "/sub_topic_1.txt";
+  const char PATH_MQTT_SUB_TOPIC_2[]    PROGMEM = "/sub_topic_2.txt";
+  const char PATH_MQTT_SUB_TOPIC_3[]    PROGMEM = "/sub_topic_3.txt";
+  const char PATH_SLEEP_TIME_SEC[]      PROGMEM = "/sleep_time_sec.txt";
+
   
   //===============================================================================
   // Wifi

@@ -27,7 +27,9 @@ test(writeAndReadFileOnLittleFS)
 test(deleteFileOnLittleFS)
 {
     String testValue = "TestValueToDelete";
-    const char* PATH_TEST_VALUE = "/pathTestValueToDelete.txt";
+    // const char* PATH_TEST_VALUE = "/pathTestValueToDelete.txt";
+    // const char PATH_TEST_VALUE[] = "/pathTestValueToDelete.txt";
+    const char PATH_TEST_VALUE[] PROGMEM = "/pathTestValueToDelete.txt";
     if (LittleFS.exists(PATH_TEST_VALUE)) 
     {
         if (!LittleFS.remove(PATH_TEST_VALUE))
