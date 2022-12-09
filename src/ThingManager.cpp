@@ -31,6 +31,19 @@ bool ThingManager::setupStationMode(const char* ssid, const char* password, cons
   }
   else 
   {
+    WiFi.setHostname(deviceName);
+    
+    if (!MDNS.begin(deviceName)) 
+    {
+      DBG.println("Error starting mDNS, use local IP instead!");
+    } else 
+    {
+
+      DBG.print(F("Starting mDNS, find me under <http://www."));
+      DBG.print(deviceName);
+      DBG.println(F(".local>"));
+    }
+
     DBG.print(F("WiFi connected to SSID: "));
     DBG.println(WiFi.SSID());
     DBG.print(F("Wifi client started: "));
@@ -244,6 +257,14 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
   {
     AsyncWebParameter* p = request->getParam(i);
     DBG.printf("%d. POST[%s]: %s\n", i+1, p->name().c_str(), p->value().c_str());
+
+    if (strcmp(p->name().c_str(), PARAM_THING_NAME) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, getPathFromFileName(PARAM_THING_NAME).c_str(), p->value().c_str());
+      } 
+    }
 
     if (strcmp(p->name().c_str(), PARAM_WIFI_SSID) == 0) 
     {

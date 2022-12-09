@@ -38,8 +38,6 @@
   #include <ESPAsyncTCP.h>
   #include <Hash.h>
   #include <ESP8266mDNS.h>
-  // #define PROGMEM   ICACHE_RODATA_ATTR
-  // #define ICACHE_RODATA_ATTR  __attribute__((section(".irom.text")))
 #endif
 
 namespace ThingManager 
