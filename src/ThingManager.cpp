@@ -39,7 +39,7 @@ bool ThingManager::setupStationMode(const char* ssid, const char* password, cons
     } else 
     {
 
-      DBG.print(F("Starting mDNS, find me under <http://www."));
+      DBG.print(F("Starting mDNS, find me under <http://"));
       DBG.print(deviceName);
       DBG.println(F(".local>"));
     }
