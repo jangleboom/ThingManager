@@ -2,10 +2,10 @@
 #define TESTS_SMART_HOME_DEVICE_MANAGER_H
 
 #include <AUnit.h>
-#include <SmartHomeDeviceManager.h>
+#include <ThingManager.h>
 
 using namespace aunit;
-using namespace SmartHomeDeviceManager;
+using namespace ThingManager;
 
 test(writeAndReadFileOnLittleFS) 
 {
@@ -27,7 +27,6 @@ test(writeAndReadFileOnLittleFS)
 test(deleteFileOnLittleFS)
 {
     String testValue = "TestValueToDelete";
-    // const char* PATH_TEST_VALUE = "/pathTestValueToDelete.txt";
     const char PATH_TEST_VALUE[] = "/pathTestValueToDelete.txt";
     if (LittleFS.exists(PATH_TEST_VALUE)) 
     {

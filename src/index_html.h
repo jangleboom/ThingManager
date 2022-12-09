@@ -96,12 +96,17 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
                     <td>
                         <input class="text_field" form="Form1" type="text" maxlength="30" name="broker_ip" placeholder=%broker_ip% style="text-align:center;">
                     </td>
-
                 </tr>
                 <tr>
                     <td colspan=2>
                         <h3>MQTT client</h3>
                     </td>
+                <tr>
+                    <td style="text-align:left;">Thing name:</td>
+                    <td>
+                        <input class="text_field" form="Form1" type="text" maxlength="30" name="thing_name" placeholder=%thing_name% style="text-align:center;">
+                    </td>
+                </tr>
                     <tr>
                         <td style="text-align:left;">Pub topic 1:</td>
                         <td>

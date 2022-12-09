@@ -1,7 +1,7 @@
 /**
- * @file    SmartHomeDeviceManager.h
+ * @file    ThingManager.h
  * @author  jangleboom
- * @link    https://github.com/audio-communication-group/SmartHomeDeviceManager.git
+ * @link    https://github.com/audio-communication-group/ThingManager.git
  * <br>
  * @brief   This is part of a distributed software, here: the web interface to config 
  *          the realtime kinematics rover
@@ -21,7 +21,7 @@
 
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
-#include <SmartHomeDeviceManagerConfig.h>
+#include <ThingManagerConfig.h>
 #include <LittleFS.h> 
 #include <FS.h>
 
@@ -42,7 +42,7 @@
   // #define ICACHE_RODATA_ATTR  __attribute__((section(".irom.text")))
 #endif
 
-namespace SmartHomeDeviceManager 
+namespace ThingManager 
 {
   // LittleFS
   #define FILE_WRITE                              "w"
@@ -51,45 +51,35 @@ namespace SmartHomeDeviceManager
 
   // DEVICE_TYPE can be defined e. g. in a separate SmartHomeDeviceConfig.h file, if not use this here
   #ifndef DEVICE_TYPE
-  static const char DEVICE_TYPE[]            PROGMEM = "smarthomedevice";
+  static const char DEVICE_TYPE[]       = "thing";
   #endif
 
   // WiFi credentials for AP mode
   #define MAX_SSIDS 10 // Space to scan and remember SSIDs
-  const char AP_PASSWORD[]             PROGMEM = "12345678";
-  const char IP_AP[]                   PROGMEM = "192.168.4.1";
+  const char AP_PASSWORD[]              = "12345678";
+  const char IP_AP[]                    = "192.168.4.1";
 
   // Parameters for LittleFS file management
-  const char PARAM_WIFI_SSID[]         PROGMEM = "ssid"; 
-  const char PARAM_WIFI_PASSWORD[]     PROGMEM = "password";
-  const char PARAM_MQTT_BROKER_IP[]    PROGMEM = "broker_ip";
-  const char PARAM_MQTT_PUB_TOPIC_1[]  PROGMEM = "pub_topic_1";
-  const char PARAM_MQTT_PUB_TOPIC_2[]  PROGMEM = "pub_topic_2";
-  const char PARAM_MQTT_PUB_TOPIC_3[]  PROGMEM = "pub_topic_3";
-  const char PARAM_MQTT_SUB_TOPIC_1[]  PROGMEM = "sub_topic_1";
-  const char PARAM_MQTT_SUB_TOPIC_2[]  PROGMEM = "sub_topic_2";
-  const char PARAM_MQTT_SUB_TOPIC_3[]  PROGMEM = "sub_topic_3";
-  const char PARAM_SLEEP_TIME_SEC[]    PROGMEM = "sleep_time_sec";
+  const char PARAM_THING_NAME[]         = "thing_name"; 
+  const char PARAM_WIFI_SSID[]          = "ssid"; 
+  const char PARAM_WIFI_PASSWORD[]      = "password";
+  const char PARAM_MQTT_BROKER_IP[]     = "broker_ip";
+  const char PARAM_MQTT_PUB_TOPIC_1[]   = "pub_topic_1";
+  const char PARAM_MQTT_PUB_TOPIC_2[]   = "pub_topic_2";
+  const char PARAM_MQTT_PUB_TOPIC_3[]   = "pub_topic_3";
+  const char PARAM_MQTT_SUB_TOPIC_1[]   = "sub_topic_1";
+  const char PARAM_MQTT_SUB_TOPIC_2[]   = "sub_topic_2";
+  const char PARAM_MQTT_SUB_TOPIC_3[]   = "sub_topic_3";
+  const char PARAM_SLEEP_TIME_SEC[]     = "sleep_time_sec";
 
-  // Paths for LittleFS file management
-  const char PATH_WIFI_SSID[]           PROGMEM = "/ssid.txt";
-  const char PATH_WIFI_PASSWORD[]       PROGMEM = "/password.txt";
-  const char PATH_MQTT_BROKER_IP[]      PROGMEM = "/broker_ip.txt";
-  const char PATH_MQTT_PUB_TOPIC_1[]    PROGMEM = "/pub_topic_1.txt";
-  const char PATH_MQTT_PUB_TOPIC_2[]    PROGMEM = "/pub_topic_2.txt";
-  const char PATH_MQTT_PUB_TOPIC_3[]    PROGMEM = "/pub_topic_3.txt";
-  const char PATH_MQTT_SUB_TOPIC_1[]    PROGMEM = "/sub_topic_1.txt";
-  const char PATH_MQTT_SUB_TOPIC_2[]    PROGMEM = "/sub_topic_2.txt";
-  const char PATH_MQTT_SUB_TOPIC_3[]    PROGMEM = "/sub_topic_3.txt";
-  const char PATH_SLEEP_TIME_SEC[]      PROGMEM = "/sleep_time_sec.txt";
-  
-//   // Initialize Table of paths & params
-// const char* const path_table[] PROGMEM = { AP_PASSWORD, IP_AP, path_2, path_3, path_4, path_5, path_6 };
-// enum ProgmemContent
-// {
-//   AP_PASSWORD
+  /**
+   * @brief Get the Path From File Name object
+   * 
+   * @param fileName 
+   * @return String 
+   */
+  String getPathFromFileName(const char* fileName);
 
-// }
   //===============================================================================
   // Wifi
   /**
@@ -233,7 +223,7 @@ namespace SmartHomeDeviceManager
    * @brief Delete all saved LittleFS files 
    * 
    */
-  void wipeLittleFsFiles(void);
+  void wipeLittleFSFiles(void);
 
 /**
  * @brief Get the unique Device Name 
