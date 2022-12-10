@@ -76,7 +76,7 @@ namespace ThingManager
    * @param fileName 
    * @return String 
    */
-  String getPathFromFileName(const char* fileName);
+  String getPath(const char* fileName);
 
   //===============================================================================
   // Wifi

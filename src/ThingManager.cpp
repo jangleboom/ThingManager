@@ -1,7 +1,7 @@
 #include <ThingManager.h>
 
 
-String ThingManager::getPathFromFileName(const char* fileName)
+String ThingManager::getPath(const char* fileName)
 {
   String path = "/";
   path += fileName;
@@ -146,8 +146,8 @@ void ThingManager::setupWiFi(AsyncWebServer* server)
   WiFi.disconnect(true);       // STA sollte noch verbunden sein
 
   // Check if we have credentials for a available network
-  String lastSSID = readFile(LittleFS, getPathFromFileName(PARAM_WIFI_SSID).c_str());
-  String lastPassword = readFile(LittleFS, getPathFromFileName(PARAM_WIFI_PASSWORD).c_str());
+  String lastSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
+  String lastPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
 
   if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
   {
@@ -262,7 +262,7 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPathFromFileName(PARAM_THING_NAME).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_THING_NAME).c_str(), p->value().c_str());
       } 
     }
 
@@ -270,7 +270,7 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPathFromFileName(PARAM_WIFI_SSID).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str(), p->value().c_str());
       } 
     }
 
@@ -278,7 +278,7 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPathFromFileName(PARAM_WIFI_PASSWORD).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str(), p->value().c_str());
       } 
     }
 
@@ -286,7 +286,7 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPathFromFileName(PARAM_MQTT_BROKER_IP).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_MQTT_BROKER_IP).c_str(), p->value().c_str());
       } 
     }
 
@@ -294,7 +294,7 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPathFromFileName(PARAM_MQTT_PUB_TOPIC_1).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_MQTT_PUB_TOPIC_1).c_str(), p->value().c_str());
       } 
     }
 
@@ -302,7 +302,7 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPathFromFileName(PARAM_MQTT_PUB_TOPIC_2).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_MQTT_PUB_TOPIC_2).c_str(), p->value().c_str());
       } 
     }
 
@@ -310,14 +310,14 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPathFromFileName(PARAM_MQTT_PUB_TOPIC_3).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_MQTT_PUB_TOPIC_3).c_str(), p->value().c_str());
       } 
     }
     if (strcmp(p->name().c_str(), PARAM_MQTT_SUB_TOPIC_1) == 0) 
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPathFromFileName(PARAM_MQTT_SUB_TOPIC_1).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_MQTT_SUB_TOPIC_1).c_str(), p->value().c_str());
       } 
     }
 
@@ -325,7 +325,7 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPathFromFileName(PARAM_MQTT_SUB_TOPIC_2).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_MQTT_SUB_TOPIC_2).c_str(), p->value().c_str());
       } 
     }
 
@@ -333,7 +333,7 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPathFromFileName(PARAM_MQTT_SUB_TOPIC_3).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_MQTT_SUB_TOPIC_3).c_str(), p->value().c_str());
       } 
     }
 
@@ -341,7 +341,7 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPathFromFileName(PARAM_SLEEP_TIME_SEC).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_SLEEP_TIME_SEC).c_str(), p->value().c_str());
         DBG.print("write PARAM_SLEEP_TIME_SEC: ");
         DBG.println("p->value().c_str()");
       } 
@@ -358,73 +358,73 @@ String ThingManager::processor(const String& var)
   String result = "";
   if (var == PARAM_WIFI_SSID) 
   {
-    String savedSSID = readFile(LittleFS, getPathFromFileName(PARAM_WIFI_SSID).c_str());
+    String savedSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
     return (savedSSID.isEmpty() ? String(PARAM_WIFI_SSID) : savedSSID);
   }
 
   else if (var == PARAM_WIFI_PASSWORD) 
   {
-    String savedPassword = readFile(LittleFS, getPathFromFileName(PARAM_WIFI_PASSWORD).c_str());
+    String savedPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
     return (savedPassword.isEmpty() ? String(PARAM_WIFI_PASSWORD) : "*******");
   }
 
   else if (var == PARAM_THING_NAME) 
   {
-    String savedThingName = readFile(LittleFS, getPathFromFileName(PARAM_THING_NAME).c_str());
+    String savedThingName = readFile(LittleFS, getPath(PARAM_THING_NAME).c_str());
     return (savedThingName.isEmpty() ? String(PARAM_THING_NAME) : savedThingName);
   }
 
   else if (var == PARAM_MQTT_BROKER_IP) 
   {
-    String savedBroker = readFile(LittleFS, getPathFromFileName(PARAM_MQTT_BROKER_IP).c_str());
+    String savedBroker = readFile(LittleFS, getPath(PARAM_MQTT_BROKER_IP).c_str());
     return (savedBroker.isEmpty() ? String(PARAM_MQTT_BROKER_IP) : savedBroker);
   }
 
   else if (var == PARAM_MQTT_PUB_TOPIC_1) 
   {
-    String savedPubTopic = readFile(LittleFS, getPathFromFileName(PARAM_MQTT_PUB_TOPIC_1).c_str());
+    String savedPubTopic = readFile(LittleFS, getPath(PARAM_MQTT_PUB_TOPIC_1).c_str());
     return (savedPubTopic.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_1) : savedPubTopic);
   }
 
   else if (var == PARAM_MQTT_PUB_TOPIC_2) 
   {
-    String savedPubTopic = readFile(LittleFS, getPathFromFileName(PARAM_MQTT_PUB_TOPIC_2).c_str());
+    String savedPubTopic = readFile(LittleFS, getPath(PARAM_MQTT_PUB_TOPIC_2).c_str());
     return (savedPubTopic.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_2) : savedPubTopic);
   }
 
   else if (var == PARAM_MQTT_PUB_TOPIC_3) 
   {
-    String savedPubTopic = readFile(LittleFS, getPathFromFileName(PARAM_MQTT_PUB_TOPIC_3).c_str());
+    String savedPubTopic = readFile(LittleFS, getPath(PARAM_MQTT_PUB_TOPIC_3).c_str());
     return (savedPubTopic.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_3) : savedPubTopic);
   }
   else if (var == PARAM_MQTT_SUB_TOPIC_1) 
   {
-    String savedSubTopic = readFile(LittleFS, getPathFromFileName(PARAM_MQTT_SUB_TOPIC_1).c_str());
+    String savedSubTopic = readFile(LittleFS, getPath(PARAM_MQTT_SUB_TOPIC_1).c_str());
     return (savedSubTopic.isEmpty() ? String(PARAM_MQTT_SUB_TOPIC_1) : savedSubTopic);
   }
 
   else if (var == PARAM_MQTT_SUB_TOPIC_2) 
   {
-    String savedSubTopic = readFile(LittleFS, getPathFromFileName(PARAM_MQTT_SUB_TOPIC_2).c_str());
+    String savedSubTopic = readFile(LittleFS, getPath(PARAM_MQTT_SUB_TOPIC_2).c_str());
     return (savedSubTopic.isEmpty() ? String(PARAM_MQTT_SUB_TOPIC_2) : savedSubTopic);
   }
 
   else if (var == PARAM_MQTT_SUB_TOPIC_3) 
   {
-    String savedSubTopic = readFile(LittleFS, getPathFromFileName(PARAM_MQTT_SUB_TOPIC_3).c_str());
+    String savedSubTopic = readFile(LittleFS, getPath(PARAM_MQTT_SUB_TOPIC_3).c_str());
     return (savedSubTopic.isEmpty() ? String(PARAM_MQTT_SUB_TOPIC_3) : savedSubTopic);
   }
 
   else if (var == PARAM_SLEEP_TIME_SEC) 
   {
-    String savedSleepTime = readFile(LittleFS, getPathFromFileName(PARAM_SLEEP_TIME_SEC).c_str());
+    String savedSleepTime = readFile(LittleFS, getPath(PARAM_SLEEP_TIME_SEC).c_str());
     return (savedSleepTime.isEmpty() ? String(PARAM_SLEEP_TIME_SEC) : savedSleepTime);
   }
  
   else if (var == "next_addr") 
   {
-    String savedSSID = readFile(LittleFS, getPathFromFileName(PARAM_WIFI_SSID).c_str());
-    String savedPW = readFile(LittleFS, getPathFromFileName(PARAM_WIFI_PASSWORD).c_str());
+    String savedSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
+    String savedPW = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
     if (savedSSID.isEmpty() || savedPW.isEmpty()) 
     {
       return String(IP_AP);
@@ -437,7 +437,7 @@ String ThingManager::processor(const String& var)
   }
   else if (var == "next_ssid") 
   {
-    String savedSSID = readFile(LittleFS, getPathFromFileName(PARAM_WIFI_SSID).c_str());
+    String savedSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
     return (savedSSID.isEmpty() ? getDeviceName(DEVICE_TYPE) : savedSSID);
   }
   return String();
@@ -559,7 +559,7 @@ void ThingManager::wipeLittleFSFiles()
 
 String ThingManager::getDeviceName(const String& prefix) 
   {
-    String thingName = readFile(LittleFS, getPathFromFileName(PARAM_THING_NAME).c_str());
+    String thingName = readFile(LittleFS, getPath(PARAM_THING_NAME).c_str());
 
     if (thingName.isEmpty())
     {
