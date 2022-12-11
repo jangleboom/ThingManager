@@ -44,4 +44,13 @@ test(deleteFileOnLittleFS)
     assertFalse(LittleFS.exists(PATH_TEST_VALUE));
 }
 
+test(getPath)
+{
+    const char testValue[]  = "testValue";
+    String testValuePath    = "/testValue.txt";
+    String result           = getPath(testValue);
+
+    assertTrue(result.equals(testValuePath));
+}
+
 #endif /*** TESTS_SMART_HOME_DEVICE_MANAGER_H ***/

@@ -1,6 +1,12 @@
 #include <ThingManager.h>
 
 
+/**
+   * @brief Get the path to a file stored in LittleFS
+   * 
+   * @param fileName  Name of stored file
+   * @return String   Path to LittleFS file
+   */
 String ThingManager::getPath(const char* fileName)
 {
   String path = "/";
