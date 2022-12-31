@@ -42,12 +42,15 @@ bool ThingManager::setupStationMode(const char* ssid, const char* password, cons
     if (!MDNS.begin(deviceName)) 
     {
       DBG.println("Error starting mDNS, use local IP instead!");
-    } else 
+    } 
+    else 
     {
-
       DBG.print(F("Starting mDNS, find me under <http://"));
       DBG.print(deviceName);
       DBG.println(F(".local>"));
+      // Add service to MDNS-SD
+      MDNS.addService("http", "tcp", 80);
+      MDNS.update();
     }
 
     DBG.print(F("WiFi connected to SSID: "));
@@ -102,6 +105,7 @@ bool ThingManager::checkConnectionToWifiStation()
       DBG.println(F("WiFi connected."));
       isConnectedToStation = true;
     }
+    MDNS.update();
   }
 
   return isConnectedToStation;
@@ -212,7 +216,7 @@ void ThingManager::startServer(AsyncWebServer *server)
 
   server->on("/actionUpdateData", HTTP_POST, actionUpdateData);
   server->on("/actionWipeData", HTTP_POST, actionWipeData);
-  server->on("/actionRebootESP32", HTTP_POST, actionRebootESP32);
+  server->on("/actionRebootESP", HTTP_POST, actionRebootESP);
 
   server->onNotFound(notFound);
   server->begin();
@@ -223,9 +227,9 @@ void ThingManager::notFound(AsyncWebServerRequest *request)
   request->send(404, "text/plain", "Not found");
 }
 
-void ThingManager::actionRebootESP32(AsyncWebServerRequest *request) 
+void ThingManager::actionRebootESP(AsyncWebServerRequest *request) 
 {
-  DBG.println("ACTION actionRebootESP32!");
+  DBG.println("ACTION actionRebootESP!");
   request->send_P(200, "text/html", REBOOT_HTML, ThingManager::processor);
   delay(3000);
   ESP.restart();

@@ -166,7 +166,7 @@ namespace ThingManager
    * 
    * @param request Request
    */
-  void actionRebootESP32(AsyncWebServerRequest *request);
+  void actionRebootESP(AsyncWebServerRequest *request);
 
   /**
    * @brief Action to handle Save button
