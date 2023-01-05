@@ -8,12 +8,17 @@
 #endif
 
 #define BUTTON_PIN 2
-Button2 button;
+Button2 button_1;
+const unsigned long LONG_CLICK_INTERVAL_MS = 2000;
+const unsigned long RECONNECT_INTERVAL_MS = 30000;
+unsigned long previousMillis = RECONNECT_INTERVAL_MS * 2;
+void btnHandler(Button2& btn);
+
 using namespace ThingManager;
 static AsyncWebServer server(80);
 String scannedSSIDs[MAX_SSIDS];
 
-void btnHandler(Button2& btn);
+
 
 
 void setup() 
@@ -27,11 +32,11 @@ void setup()
 
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
-  button.begin(BUTTON_PIN);
-  button.setLongClickTime(3000);
-  button.setClickHandler(btnHandler);
-  button.setDoubleClickHandler(btnHandler);
-  button.setLongClickHandler(btnHandler);
+  button_1.begin(BUTTON_PIN);
+  button_1.setLongClickTime(LONG_CLICK_INTERVAL_MS);
+  button_1.setClickHandler(btnHandler);
+  button_1.setDoubleClickHandler(btnHandler);
+  button_1.setLongClickHandler(btnHandler);
   //===============================================================================
   // Initialize LittleFS
   // Use board_build.partitions in platformio.ini
@@ -57,8 +62,6 @@ void setup()
   setupWiFi(&server);
 }
 
-const unsigned long RECONNECT_INTERVAL = 30000;
-unsigned long previousMillis = RECONNECT_INTERVAL * 2;
 
 void loop() 
 {
@@ -68,21 +71,21 @@ void loop()
 
   unsigned long currentMillis = millis();
   // if WiFi is down, try reconnecting every RECONNECT_INTERVAL seconds
-  if (currentMillis - previousMillis > RECONNECT_INTERVAL) 
+  if (currentMillis - previousMillis > RECONNECT_INTERVAL_MS) 
   {
     ThingManager::checkConnectionToWifiStation();
     digitalWrite(LED_BUILTIN, ( (WiFi.getMode() == WIFI_AP) ? LOW : HIGH) );
     previousMillis = currentMillis;
   }
 
-  button.loop();
-  MDNS.update();
+  button_1.loop();
+  // MDNS.update();
 }
 
 
 void btnHandler(Button2& btn) 
 {
-   if (btn == button) 
+   if (btn == button_1) 
    {
     switch ( btn.getType() ) 
     {
