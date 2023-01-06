@@ -48,11 +48,11 @@ bool ThingManager::setupStationMode(const char* ssid, const char* password, cons
       DBG.print(F("Starting mDNS, find me under <http://"));
       DBG.print(deviceName);
       DBG.println(F(".local>"));
-      #ifdef ESP8266
+#ifdef ESP8266
       // Add service to MDNS-SD
       MDNS.addService("http", "tcp", 80);
       MDNS.update();
-      #endif
+#endif
     }
 
     DBG.print(F("WiFi connected to SSID: "));
@@ -107,9 +107,9 @@ bool ThingManager::checkConnectionToWifiStation()
       DBG.println(F("WiFi connected."));
       isConnectedToStation = true;
     }
-  #ifdef ESP8266
+#ifdef ESP8266
     MDNS.update();
-  #endif
+#endif
   }
 
   return isConnectedToStation;
@@ -235,7 +235,7 @@ void ThingManager::actionRebootESP(AsyncWebServerRequest *request)
 {
   DBG.println("ACTION actionRebootESP!");
   request->send_P(200, "text/html", REBOOT_HTML, ThingManager::processor);
-  delay(3000);
+  delay(5000);
   ESP.restart();
 }
 

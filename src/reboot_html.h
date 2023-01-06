@@ -9,7 +9,7 @@ const char REBOOT_HTML[] PROGMEM = R"(
 <head>
     <meta content="text/html" ; charset="UTF-8" ; http-equiv="content-type">
     <meta name="viewport" content="width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
-    <title>SmartHomeDevice Setup done</title>
+    <title>Thing Setup done</title>
     <style>
         body {
             background-color: #4180C8;
