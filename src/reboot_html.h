@@ -12,9 +12,10 @@ const char REBOOT_HTML[] PROGMEM = R"(
     <title>Thing Setup done</title>
     <style>
         body {
-            background-color: #4180C8;
+            background-color: #241E4E;
+            background-image: radial-gradient(#15112C, #241E4E, #312966);
+            color: #DFDFDF;
             font-family: Lato, Helvetica, Roboto, sans-serif;
-            color: GhostWhite;
             text-align: center;
             border: 1em;
         }
@@ -26,7 +27,7 @@ const char REBOOT_HTML[] PROGMEM = R"(
 
         progress {
             position: relative;
-            accent-color: #F0A03C;
+            accent-color: #399E5A;
         }
     </style>
 </head>
