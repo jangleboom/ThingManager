@@ -276,7 +276,9 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPath(PARAM_THING_NAME).c_str(), p->value().c_str());
+        String newName = p->value();
+        newName.toLowerCase();
+        writeFile(LittleFS, getPath(PARAM_THING_NAME).c_str(), newName.c_str());
       } 
     }
 
