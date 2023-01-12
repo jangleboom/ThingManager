@@ -8,3 +8,5 @@ The device runs as an access point if no credentials are saved, (SSID:
 Fill the web form with your data, save and reboot. 
 
 ("thing" + CHIP_ID + ".local", via local IP or the custom hostname you entered in the web form before).
+
+[Support RTK2GO](http://new.rtk2go.com/donations-and-support/)

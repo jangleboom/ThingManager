@@ -12,8 +12,7 @@ const char REBOOT_HTML[] PROGMEM = R"(
     <title>Thing Setup done</title>
     <style>
         body {
-            background-color: #241E4E;
-            background-image: radial-gradient(#15112C, #241E4E, #312966);
+            background-color: #399E5A;
             color: #DFDFDF;
             font-family: Lato, Helvetica, Roboto, sans-serif;
             text-align: center;
