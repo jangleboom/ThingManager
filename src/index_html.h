@@ -75,7 +75,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             text-decoration: none;
             display: inline-block;
             font-size: 13px;
-            width: 300px;
+            width: 275px;
         }
 
         /* set the opacity of placeholder */
@@ -114,7 +114,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         else 
         {
             document.getElementsByName("ssid")[0].placeholder = "Your wifi SSID";
-            document.getElementsByName("ssid")[0].style.color = "blue";
+            document.getElementsByName("ssid")[0].style.color = "grey";
         }
         if (password) 
         {
@@ -123,7 +123,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         }
         else
         {   document.getElementsByName("password")[0].placeholder = "Your wifi password";
-            document.getElementsByName("password")[0].style.color = "blue";
+            document.getElementsByName("password")[0].style.color = "grey";
         }
         if (broker_ip) 
         {
@@ -133,7 +133,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         else
         {   
             document.getElementsByName("broker_ip")[0].placeholder = "Your broker IP";
-            document.getElementsByName("broker_ip")[0].style.color = "blue";
+            document.getElementsByName("broker_ip")[0].style.color = "grey";
         }
         if (thing_name) 
         {
@@ -182,7 +182,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         }
         else
         {   
-            document.getElementsByName("sub_topic_1")[0].placeholder = "E.g. broker/place/value1";
+            document.getElementsByName("sub_topic_1")[0].placeholder = "E.g.: broker/place/value1";
             document.getElementsByName("sub_topic_1")[0].style.color = "grey";
         }
         if (sub_topic_2) 
