@@ -375,66 +375,66 @@ String ThingManager::processor(const String& var)
   if (var == PARAM_WIFI_SSID) 
   {
     String savedSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
-    return (savedSSID.isEmpty() ? String(PARAM_WIFI_SSID) : savedSSID);
+    return (savedSSID.isEmpty() ? "" : savedSSID);
   }
 
   else if (var == PARAM_WIFI_PASSWORD) 
   {
     String savedPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
-    return (savedPassword.isEmpty() ? String(PARAM_WIFI_PASSWORD) : "*******");
+    return (savedPassword.isEmpty() ? "" : "*******");
   }
 
   else if (var == PARAM_THING_NAME) 
   {
     String savedThingName = readFile(LittleFS, getPath(PARAM_THING_NAME).c_str());
-    return (savedThingName.isEmpty() ? String(PARAM_THING_NAME) : savedThingName);
+    return (savedThingName.isEmpty() ? "" : savedThingName);
   }
 
   else if (var == PARAM_MQTT_BROKER_IP) 
   {
     String savedBroker = readFile(LittleFS, getPath(PARAM_MQTT_BROKER_IP).c_str());
-    return (savedBroker.isEmpty() ? String(PARAM_MQTT_BROKER_IP) : savedBroker);
+    return (savedBroker.isEmpty() ? "" : savedBroker);
   }
 
   else if (var == PARAM_MQTT_PUB_TOPIC_1) 
   {
     String savedPubTopic = readFile(LittleFS, getPath(PARAM_MQTT_PUB_TOPIC_1).c_str());
-    return (savedPubTopic.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_1) : savedPubTopic);
+    return (savedPubTopic.isEmpty() ? "" : savedPubTopic);
   }
 
   else if (var == PARAM_MQTT_PUB_TOPIC_2) 
   {
     String savedPubTopic = readFile(LittleFS, getPath(PARAM_MQTT_PUB_TOPIC_2).c_str());
-    return (savedPubTopic.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_2) : savedPubTopic);
+    return (savedPubTopic.isEmpty() ? "" : savedPubTopic);
   }
 
   else if (var == PARAM_MQTT_PUB_TOPIC_3) 
   {
     String savedPubTopic = readFile(LittleFS, getPath(PARAM_MQTT_PUB_TOPIC_3).c_str());
-    return (savedPubTopic.isEmpty() ? String(PARAM_MQTT_PUB_TOPIC_3) : savedPubTopic);
+    return (savedPubTopic.isEmpty() ? "" : savedPubTopic);
   }
   else if (var == PARAM_MQTT_SUB_TOPIC_1) 
   {
     String savedSubTopic = readFile(LittleFS, getPath(PARAM_MQTT_SUB_TOPIC_1).c_str());
-    return (savedSubTopic.isEmpty() ? String(PARAM_MQTT_SUB_TOPIC_1) : savedSubTopic);
+    return (savedSubTopic.isEmpty() ? "" : savedSubTopic);
   }
 
   else if (var == PARAM_MQTT_SUB_TOPIC_2) 
   {
     String savedSubTopic = readFile(LittleFS, getPath(PARAM_MQTT_SUB_TOPIC_2).c_str());
-    return (savedSubTopic.isEmpty() ? String(PARAM_MQTT_SUB_TOPIC_2) : savedSubTopic);
+    return (savedSubTopic.isEmpty() ? "" : savedSubTopic);
   }
 
   else if (var == PARAM_MQTT_SUB_TOPIC_3) 
   {
     String savedSubTopic = readFile(LittleFS, getPath(PARAM_MQTT_SUB_TOPIC_3).c_str());
-    return (savedSubTopic.isEmpty() ? String(PARAM_MQTT_SUB_TOPIC_3) : savedSubTopic);
+    return (savedSubTopic.isEmpty() ? "" : savedSubTopic);
   }
 
   else if (var == PARAM_SLEEP_TIME_SEC) 
   {
     String savedSleepTime = readFile(LittleFS, getPath(PARAM_SLEEP_TIME_SEC).c_str());
-    return (savedSleepTime.isEmpty() ? String(PARAM_SLEEP_TIME_SEC) : savedSleepTime);
+    return (savedSleepTime.isEmpty() ? "" : savedSleepTime);
   }
  
   else if (var == "next_addr") 
