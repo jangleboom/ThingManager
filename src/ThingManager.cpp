@@ -235,7 +235,7 @@ void ThingManager::actionRebootESP(AsyncWebServerRequest *request)
 {
   DBG.println("ACTION actionRebootESP!");
   request->send_P(200, "text/html", REBOOT_HTML, ThingManager::processor);
-  delay(5000);
+  delay(3000);
   ESP.restart();
 }
 

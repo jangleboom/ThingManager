@@ -21,7 +21,6 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
 
         body {
             background-color: var(--RUSSIAN_VIOLETT);
-            /*            background-image: radial-gradient(#15112C,  #1c1c1c, #312966);*/
             color: var(--GAINSBORO);
             font-family: Lato, Helvetica, Roboto, sans-serif;
             text-align: center;
@@ -95,80 +94,113 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         let sub_topic_3 = "%sub_topic_3%";
         let sleep_time_sec = "%sleep_time_sec%";
 
-        if (ssid) {
+        if (ssid) 
+        {
             document.getElementsByName("ssid")[0].placeholder = ssid;
             document.getElementsByName("ssid")[0].style.color = "black";
-        } else {
+        } 
+        else 
+        {
             document.getElementsByName("ssid")[0].placeholder = "Your wifi SSID";
             document.getElementsByName("ssid")[0].style.color = "grey";
         }
-        if (password) {
+        if (password) 
+        {
             document.getElementsByName("password")[0].placeholder = password;
             document.getElementsByName("password")[0].style.color = "black";
-        } else {
+        } 
+        else 
+        {
             document.getElementsByName("password")[0].placeholder = "Your wifi password";
             document.getElementsByName("password")[0].style.color = "grey";
         }
-        if (broker_ip) {
+        if (broker_ip) 
+        {
             document.getElementsByName("broker_ip")[0].placeholder = broker_ip;
             document.getElementsByName("broker_ip")[0].style.color = "black";
-        } else {
+        } 
+        else 
+        {
             document.getElementsByName("broker_ip")[0].placeholder = "Your broker IP";
             document.getElementsByName("broker_ip")[0].style.color = "grey";
         }
-        if (thing_name) {
+        if (thing_name) 
+        {
             document.getElementsByName("thing_name")[0].placeholder = thing_name;
             document.getElementsByName("thing_name")[0].style.color = "black";
-        } else {
+        } 
+        else 
+        {
             document.getElementsByName("thing_name")[0].placeholder = "Enter a thing name";
             document.getElementsByName("thing_name")[0].style.color = "grey";
         }
-        if (pub_topic_1) {
+        if (pub_topic_1) 
+        {
             document.getElementsByName("pub_topic_1")[0].placeholder = pub_topic_1;
             document.getElementsByName("pub_topic_1")[0].style.color = "black";
-        } else {
+        } 
+        else 
+        {
             document.getElementsByName("pub_topic_1")[0].placeholder = "E.g.: broker/place/value1";
             document.getElementsByName("pub_topic_1")[0].style.color = "grey";
         }
-        if (pub_topic_2) {
+        if (pub_topic_2) 
+        {
             document.getElementsByName("pub_topic_2")[0].placeholder = pub_topic_2;
             document.getElementsByName("pub_topic_2")[0].style.color = "black";
-        } else {
+        } 
+        else 
+        {
             document.getElementsByName("pub_topic_2")[0].placeholder = "E.g.: broker/place/value2";
             document.getElementsByName("pub_topic_2")[0].style.color = "grey";
         }
-        if (pub_topic_3) {
+        if (pub_topic_3) 
+        {
             document.getElementsByName("pub_topic_3")[0].placeholder = pub_topic_3;
             document.getElementsByName("pub_topic_3")[0].style.color = "black";
-        } else {
+        } 
+        else 
+        {
             document.getElementsByName("pub_topic_3")[0].placeholder = "E.g.: broker/place/value3";
             document.getElementsByName("pub_topic_3")[0].style.color = "grey";
         }
-        if (sub_topic_1) {
+        if (sub_topic_1) 
+        {
             document.getElementsByName("sub_topic_1")[0].placeholder = sub_topic_1;
             document.getElementsByName("sub_topic_1")[0].style.color = "black";
-        } else {
+        } 
+        else 
+        {
             document.getElementsByName("sub_topic_1")[0].placeholder = "E.g.: broker/place/value1";
             document.getElementsByName("sub_topic_1")[0].style.color = "grey";
         }
-        if (sub_topic_2) {
+        if (sub_topic_2) 
+        {
             document.getElementsByName("sub_topic_2")[0].placeholder = sub_topic_2;
             document.getElementsByName("sub_topic_2")[0].style.color = "black";
-        } else {
+        } 
+        else 
+        {
             document.getElementsByName("sub_topic_2")[0].placeholder = "E.g.:  broker/place/value2";
             document.getElementsByName("sub_topic_2")[0].style.color = "grey";
         }
-        if (sub_topic_3) {
+        if (sub_topic_3) 
+        {
             document.getElementsByName("sub_topic_3")[0].placeholder = sub_topic_3;
             document.getElementsByName("sub_topic_3")[0].style.color = "black";
-        } else {
+        } 
+        else 
+        {
             document.getElementsByName("sub_topic_3")[0].placeholder = "E.g.:  broker/place/value3";
             document.getElementsByName("sub_topic_3")[0].style.color = "grey";
         }
-        if (sleep_time_sec) {
+        if (sleep_time_sec) 
+        {
             document.getElementsByName("sleep_time_sec")[0].placeholder = sleep_time_sec;
             document.getElementsByName("sleep_time_sec")[0].style.color = "black";
-        } else {
+        } 
+        else 
+        {
             document.getElementsByName("sleep_time_sec")[0].placeholder = "Sleep time in seconds.";
             document.getElementsByName("sleep_time_sec")[0].style.color = "grey";
         }
