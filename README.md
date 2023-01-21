@@ -1,6 +1,8 @@
 # Thing Manager
 ### ThingManager
 
+<img align="right" src="./Screenshots/ThingManager.jpg" width="240"/>
+
 
 Configure ESP WiFi credentials and other default values for a RTK rover. 
 Start access point ("thing" + CHIP_ID + ".local"), go to 192.168.4.1, fill the web form, save and reboot. 
