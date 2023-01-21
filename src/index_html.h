@@ -27,16 +27,16 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
     <title>Setup</title>
     <style>
         :root {
-            --RUSSIAN_VIOLETT: #241E4E;
-            --GREEN_COLOR: #399E5A;
-            --RED_COLOR: #CE6C47;
-            --GAINSBORO: #DFDFDF;
-            --TEAL_BLUE: #40798C;
+            --OUTER_SPACE_CRAYOLA: #1c3738;
+            --EMERALD_GREEN: #14cc60;
+            --FIRE_ENGINE_RED: #c1292e;
+            --ALABASTER_WHITE: #f1f2eb;
+            --ROMAN_SILVER: #878e99;
         }
 
         body {
-            background-color: var(--RUSSIAN_VIOLETT);
-            color: var(--GAINSBORO);
+            background-color: var(--OUTER_SPACE_CRAYOLA);
+            color: var(--ALABASTER_WHITE);
             font-family: Lato, Helvetica, Roboto, sans-serif;
             text-align: center;
             border: 1em;
@@ -58,18 +58,18 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         }
 
         .blue {
-            background-color: var(--TEAL_BLUE);
-            color: var(--RUSSIAN_VIOLETT);
+            background-color: var(--ROMAN_SILVER);
+            color: var(--OUTER_SPACE_CRAYOLA);
         }
 
         .green {
-            background-color: var(--GREEN_COLOR);
-            color: var(--RUSSIAN_VIOLETT);
+            background-color: var(--EMERALD_GREEN);
+            color: var(--OUTER_SPACE_CRAYOLA);
         }
 
         .red {
-            background-color: var(--RED_COLOR);
-            color: var(--RUSSIAN_VIOLETT);
+            background-color: var(--FIRE_ENGINE_RED);
+            color: var(--OUTER_SPACE_CRAYOLA);
         }
 
         .text_field {
@@ -110,113 +110,80 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         let sub_topic_3 = "%sub_topic_3%";
         let sleep_time_sec = "%sleep_time_sec%";
 
-        if (ssid) 
-        {
+        if (ssid) {
             document.getElementsByName("ssid")[0].placeholder = ssid;
             document.getElementsByName("ssid")[0].style.color = "black";
-        } 
-        else 
-        {
+        } else {
             document.getElementsByName("ssid")[0].placeholder = "Your WiFi SSID";
             document.getElementsByName("ssid")[0].style.color = "grey";
         }
-        if (password) 
-        {
+        if (password) {
             document.getElementsByName("password")[0].placeholder = password;
             document.getElementsByName("password")[0].style.color = "black";
-        } 
-        else 
-        {
+        } else {
             document.getElementsByName("password")[0].placeholder = "Your WiFi password";
             document.getElementsByName("password")[0].style.color = "grey";
         }
-        if (broker_ip) 
-        {
+        if (broker_ip) {
             document.getElementsByName("broker_ip")[0].placeholder = broker_ip;
             document.getElementsByName("broker_ip")[0].style.color = "black";
-        } 
-        else 
-        {
+        } else {
             document.getElementsByName("broker_ip")[0].placeholder = "Your broker IP";
             document.getElementsByName("broker_ip")[0].style.color = "grey";
         }
-        if (thing_name) 
-        {
+        if (thing_name) {
             document.getElementsByName("thing_name")[0].placeholder = thing_name;
             document.getElementsByName("thing_name")[0].style.color = "black";
-        } 
-        else 
-        {
+        } else {
             document.getElementsByName("thing_name")[0].placeholder = "Enter a thing name";
             document.getElementsByName("thing_name")[0].style.color = "grey";
         }
-        if (pub_topic_1) 
-        {
+        if (pub_topic_1) {
             document.getElementsByName("pub_topic_1")[0].placeholder = pub_topic_1;
             document.getElementsByName("pub_topic_1")[0].style.color = "black";
-        } 
-        else 
-        {
+        } else {
             document.getElementsByName("pub_topic_1")[0].placeholder = "E.g.: broker/place/value1";
             document.getElementsByName("pub_topic_1")[0].style.color = "grey";
         }
-        if (pub_topic_2) 
-        {
+        if (pub_topic_2) {
             document.getElementsByName("pub_topic_2")[0].placeholder = pub_topic_2;
             document.getElementsByName("pub_topic_2")[0].style.color = "black";
-        } 
-        else 
-        {
+        } else {
             document.getElementsByName("pub_topic_2")[0].placeholder = "E.g.: broker/place/value2";
             document.getElementsByName("pub_topic_2")[0].style.color = "grey";
         }
-        if (pub_topic_3) 
-        {
+        if (pub_topic_3) {
             document.getElementsByName("pub_topic_3")[0].placeholder = pub_topic_3;
             document.getElementsByName("pub_topic_3")[0].style.color = "black";
-        } 
-        else 
-        {
+        } else {
             document.getElementsByName("pub_topic_3")[0].placeholder = "E.g.: broker/place/value3";
             document.getElementsByName("pub_topic_3")[0].style.color = "grey";
         }
-        if (sub_topic_1) 
-        {
+        if (sub_topic_1) {
             document.getElementsByName("sub_topic_1")[0].placeholder = sub_topic_1;
             document.getElementsByName("sub_topic_1")[0].style.color = "black";
-        } 
-        else 
-        {
+        } else {
             document.getElementsByName("sub_topic_1")[0].placeholder = "E.g.: broker/place/value1";
             document.getElementsByName("sub_topic_1")[0].style.color = "grey";
         }
-        if (sub_topic_2) 
-        {
+        if (sub_topic_2) {
             document.getElementsByName("sub_topic_2")[0].placeholder = sub_topic_2;
             document.getElementsByName("sub_topic_2")[0].style.color = "black";
-        } 
-        else 
-        {
+        } else {
             document.getElementsByName("sub_topic_2")[0].placeholder = "E.g.:  broker/place/value2";
             document.getElementsByName("sub_topic_2")[0].style.color = "grey";
         }
-        if (sub_topic_3) 
-        {
+        if (sub_topic_3) {
             document.getElementsByName("sub_topic_3")[0].placeholder = sub_topic_3;
             document.getElementsByName("sub_topic_3")[0].style.color = "black";
-        } 
-        else 
-        {
+        } else {
             document.getElementsByName("sub_topic_3")[0].placeholder = "E.g.:  broker/place/value3";
             document.getElementsByName("sub_topic_3")[0].style.color = "grey";
         }
-        if (sleep_time_sec) 
-        {
+        if (sleep_time_sec) {
             document.getElementsByName("sleep_time_sec")[0].placeholder = sleep_time_sec;
             document.getElementsByName("sleep_time_sec")[0].style.color = "black";
-        } 
-        else 
-        {
+        } else {
             document.getElementsByName("sleep_time_sec")[0].placeholder = "Sleep time in seconds.";
             document.getElementsByName("sleep_time_sec")[0].style.color = "grey";
         }
