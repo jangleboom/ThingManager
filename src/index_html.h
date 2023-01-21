@@ -1,5 +1,20 @@
 #ifndef INDEX_HTML_H
 #define INDEX_HTML_H
+
+/* Colors
+Set 1:
+            --OUTER_SPACE_CRAYOLA:  #1c3738;
+            --EMERALD_GREEN:        #14cc60;
+            --FIRE_ENGINE_RED:      #c1292e;
+            --ALABASTER_WHITE:      #f1f2eb;
+            --ROMAN_SILVER:         #878e99;
+Set 2:
+            --RUSSIAN_VIOLETT:      #241E4E;
+            --GREEN_COLOR:          #399E5A;
+            --RED_COLOR:            #CE6C47;
+            --GAINSBORO:            #DFDFDF;
+            --TEAL_BLUE:            #40798C;
+*/
  
 const char INDEX_HTML[] PROGMEM = R"rawliteral(
 
@@ -65,6 +80,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             display: inline-block;
             font-size: 13px;
             width: 275px;
+            color: black;
         }
 
         /* set the opacity of placeholder */
@@ -101,7 +117,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         } 
         else 
         {
-            document.getElementsByName("ssid")[0].placeholder = "Your wifi SSID";
+            document.getElementsByName("ssid")[0].placeholder = "Your WiFi SSID";
             document.getElementsByName("ssid")[0].style.color = "grey";
         }
         if (password) 
@@ -111,7 +127,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         } 
         else 
         {
-            document.getElementsByName("password")[0].placeholder = "Your wifi password";
+            document.getElementsByName("password")[0].placeholder = "Your WiFi password";
             document.getElementsByName("password")[0].style.color = "grey";
         }
         if (broker_ip) 
@@ -321,7 +337,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
     <br>
     <div>
         <input type="submit" form="Form1" class="button green" formaction="/actionUpdateData" value="Save" id="save_button" name="save_button" />
-        <input type="submit" form="Form3" class="button green" formaction="/actionRebootESP32" value="Reboot" id="reboot_button" name="reboot_button" />
+        <input type="submit" form="Form3" class="button green" formaction="/actionRebootESP" value="Reboot" id="reboot_button" name="reboot_button" />
         <input type="reset" form="Form1" class="button blue" value="Cancel" />
         <input type="submit" form="Form2" class="button red" formaction="/actionWipeData" value="Wipe" id="wipe_button" name="wipe_button" />
     </div>

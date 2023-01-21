@@ -1,6 +1,20 @@
 #ifndef REBOOT_HTML_H
 #define REBOOT_HTML_H
 
+/* Colors
+Set 1:
+            --OUTER_SPACE_CRAYOLA:  #1c3738;
+            --EMERALD_GREEN:        #14cc60;
+            --FIRE_ENGINE_RED:      #c1292e;
+            --ALABASTER_WHITE:      #f1f2eb;
+            --ROMAN_SILVER:         #878e99;
+Set 2:
+            --RUSSIAN_VIOLETT:      #241E4E;
+            --GREEN_COLOR:          #399E5A;
+            --RED_COLOR:            #CE6C47;
+            --GAINSBORO:            #DFDFDF;
+            --TEAL_BLUE:            #40798C;
+*/
 
 const char REBOOT_HTML[] PROGMEM = R"(
 <!DOCTYPE HTML>

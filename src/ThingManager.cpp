@@ -104,7 +104,13 @@ bool ThingManager::checkConnectionToWifiStation()
     } 
     else 
     {
-      DBG.println(F("WiFi connected."));
+      DBG.print(F("WiFi connected to SSID: "));
+      DBG.println(WiFi.SSID());
+      DBG.print(F("WiFi client name: "));
+      DBG.println(WiFi.getHostname());
+      DBG.print(F("IP Address: "));
+      DBG.println(WiFi.localIP());
+      
       isConnectedToStation = true;
     }
 #ifdef ESP8266
@@ -235,7 +241,7 @@ void ThingManager::actionRebootESP(AsyncWebServerRequest *request)
 {
   DBG.println("ACTION actionRebootESP!");
   request->send_P(200, "text/html", REBOOT_HTML, ThingManager::processor);
-  delay(3000);
+  delay(5000);
   ESP.restart();
 }
 
