@@ -1,7 +1,7 @@
 # Thing Manager
 ### ThingManager
 
-<img align="right" src="./Screenshots/ThingManager.png" width="340"/>
+<img align="right" src="./screenshots/ThingManager.png" width="340"/>
 
 
 Configure ESP WiFi credentials and other default values for a RTK rover. 
