@@ -10,10 +10,18 @@ const char ERROR_HTML[] PROGMEM = R"rawliteral(
     <meta name="viewport" content="width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0">
     <title>RTK rover setup</title>
     <style>
+       :root {
+            --OUTER_SPACE_CRAYOLA: #1c3738;
+            --EMERALD_GREEN: #14cc60;
+            --FIRE_ENGINE_RED: #c1292e;
+            --ALABASTER_WHITE: #f1f2eb;
+            --ROMAN_SILVER: #878e99;
+        }
+
         body {
-            background-color: #4180C8;
+            background-color: var(--OUTER_SPACE_CRAYOLA);
             font-family: Lato, Helvetica, Roboto, sans-serif;
-            color: GhostWhite;
+            color: var(--ALABASTER_WHITE);
             text-align: center;
             border: 1em;
         }
@@ -25,7 +33,7 @@ const char ERROR_HTML[] PROGMEM = R"rawliteral(
 
         progress {
             position: relative;
-            accent-color: #F0A03C;
+            accent-color: var(--EMERALD_GREEN);
         }
     </style>
 
