@@ -37,8 +37,8 @@ OledTable table(&display,4,1);
 #endif
 #endif
 
-void setup_display(void);
-void test_print_text(void);
+void setupDisplay(void);
+void printTestDisplay(void);
 
 void setup() 
 { //===============================================================================
@@ -49,7 +49,6 @@ void setup()
   DBG.println(F("Serial setup done."));
   #endif
 
-
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   button.begin(BUTTON_PIN);
@@ -58,8 +57,8 @@ void setup()
   button.setDoubleClickHandler(btnHandler);
   button.setLongClickHandler(btnHandler);
 
-  setup_display();
-  test_print_text();
+  setupDisplay();
+  printTestDisplay();
 
   //===============================================================================
   // Initialize LittleFS
@@ -150,7 +149,7 @@ void btnHandler(Button2& btn)
    }
 }
 
-void setup_display() {
+void setupDisplay() {
   // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 64x48)
   // Clear the buffer.
@@ -164,7 +163,7 @@ void setup_display() {
   delay(2000);
 }
 
-void test_print_text() 
+void printTestDisplay() 
 {
   DBG.println(table.setText(0,0,"Temp:"));
   int dummyTemp = random(-20, 40);

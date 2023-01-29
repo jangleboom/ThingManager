@@ -121,7 +121,7 @@ bool ThingManager::checkConnectionToWifiStation()
   return isConnectedToStation;
 }
 
-void ThingManager::setupAPMode(const char* apSsid, const char* apPassword) 
+bool ThingManager::setupAPMode(const char* apSsid, const char* apPassword) 
 {
   DBG.print("Setting soft-AP ... ");
   // WiFi.disconnect();
@@ -156,12 +156,13 @@ if (WiFi.getMode() == wifiAPMode)
   {
     DBG.print(F("Set to WIFI_AP mode failed! "));
   }
-// DBG.print("wait a minute");
-// while(true){};
+
+  return result;
 }
 
-void ThingManager::setupWiFi(AsyncWebServer* server)
+bool ThingManager::setupWiFi(AsyncWebServer* server)
 {
+  bool success = false;
   WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
   WiFi.disconnect(true);       // STA sollte noch verbunden sein
 
@@ -171,7 +172,7 @@ void ThingManager::setupWiFi(AsyncWebServer* server)
 
   if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
   {
-    setupAPMode(getDeviceName(DEVICE_TYPE).c_str(), AP_PASSWORD);
+    success = setupAPMode(getDeviceName(DEVICE_TYPE).c_str(), AP_PASSWORD);
     delay(500);
   } 
   else
@@ -184,11 +185,13 @@ void ThingManager::setupWiFi(AsyncWebServer* server)
       // vTaskDelay(1000/portTICK_RATE_MS);
       delay(1000);
     }
-    setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
+    success = setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
     delay(500);
   }
   
   startServer(server);
+
+  return success;
 }
 
 bool ThingManager::savedNetworkAvailable(const String& ssid) 

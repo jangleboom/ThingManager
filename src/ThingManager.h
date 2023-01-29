@@ -96,8 +96,9 @@ namespace ThingManager
    * 
    * @param apSsid      SSID of the access point
    * @param apPassword  Password of the access point
+   * @return bool       success
    */
-  void setupAPMode(const char* apSsid, const char* apPassword);
+  bool setupAPMode(const char* apSsid, const char* apPassword);
 
   /**
    * @brief Setup WiFi: Access point on first run (if no credentials saved in LittleFS),
@@ -109,9 +110,9 @@ namespace ThingManager
    *        device will switch connect in station mode after reboot.
    * 
    * @param server Pointer to AsyncWebServer, where the web form is hosted.
-   * 
+   * @return bool       success
    */
-  void setupWiFi(AsyncWebServer* server);
+  bool setupWiFi(AsyncWebServer* server);
 
   /**
    * @brief Recennect to the last AP, if reachable
