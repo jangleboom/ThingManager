@@ -1,10 +1,10 @@
-#ifndef SMART_HOME_DEVICE_CONFIG_H
-#ifndef SMART_HOME_DEVICE_MANAGER_CONFIG_H
-#define SMART_HOME_DEVICE_MANAGER_CONFIG_H
+#ifndef THING_CONFIG_H
+#ifndef THING_MANAGER_CONFIG_H
+#define THING_MANAGER_CONFIG_H
 #include <Arduino.h>
 
 /* 
-THIS WILL BE REPLACED BY THE RTKRoverConfig.h after including this project 
+THIS WILL BE REPLACED BY THE ThingManagerConfig.h after including this project 
 as submodule into the Smart Home Device project under lib/
 */
 
@@ -20,5 +20,5 @@ as submodule into the Smart Home Device project under lib/
 #define BAUD                          115200
 #define STATION_SERVER_ENABLED        true
 
-#endif  /*** SMART_HOME_DEVICE_MANAGER_CONFIG_H ***/
+#endif  /*** THING_MANAGER_CONFIG_H ***/
 #endif
