@@ -28,7 +28,7 @@ void btnHandler(Button2& btn);
 // SDA GPIO4
 #define OLED_RESET 0  // GPIO0
 Adafruit_SSD1306 display(OLED_RESET);
-OledTable table(&display,4,1);
+OledTable table(&display,4,2);
 #define XPOS    0
 #define YPOS    1
 #define DELTAY  2
@@ -39,6 +39,7 @@ OledTable table(&display,4,1);
 
 void setupDisplay(void);
 void printTestDisplay(void);
+void blinkOneTime(int blinkTime, bool shouldNotBlock);
 
 void setup() 
 { //===============================================================================
@@ -59,7 +60,6 @@ void setup()
 
   setupDisplay();
   printTestDisplay();
-
   //===============================================================================
   // Initialize LittleFS
   // Use board_build.partitions in platformio.ini
@@ -73,7 +73,7 @@ void setup()
   // (And dont forget to comment this again after one run ;)
   //formatLittleFS();
 
-  // wipeLittleFSFiles();  // Use this for deleting all data without formatting
+  //wipeLittleFSFiles();  // Use this for deleting all data without formatting
   
   #ifdef DEBUGGING
   listFiles();
@@ -82,9 +82,13 @@ void setup()
   //===============================================================================
   
   
-  setupWiFi(&server);
+   if (!setupWiFi(&server)) 
+  {
+    DBG.println(F("Wifi setup failed, check your credentials"));
+    while (true) blinkOneTime(1000, false);
+  }
 
-  randomSeed(analogRead(0));
+  // randomSeed(analogRead(0));
 }
 
 const unsigned long RECONNECT_INTERVAL = 30000;
@@ -106,7 +110,7 @@ void loop()
   #else
     digitalWrite(LED_BUILTIN, ( (WiFi.getMode() == WIFI_AP) ? LOW : HIGH) );
   #endif
-    DBG.printf("WiFi Mode: %i\n", WiFi.getMode());
+    DBG.printf("WiFi Mode: %s\n", getWiFiModeStr(WiFi.getMode()).c_str());
     previousMillis = currentMillis;
   }
 
@@ -127,6 +131,7 @@ void btnHandler(Button2& btn)
     {
         case single_click:
             DBG.print("single ");
+            printTestDisplay();
             break;
         case double_click:
             DBG.print("double ");
@@ -136,7 +141,9 @@ void btnHandler(Button2& btn)
             break;
         case long_click:
             DBG.print("long ");
-            // Start AP:
+            /** Make some actions, e. g.:
+            /*  Start AP:
+            /**/
             // wipeLittleFSFiles();
             // delay(3000);
             // ESP.restart();
@@ -165,10 +172,33 @@ void setupDisplay() {
 
 void printTestDisplay() 
 {
-  DBG.println(table.setText(0,0,"Temp:"));
   int dummyTemp = random(-20, 40);
-  DBG.println (table.setText(1, 0, String(dummyTemp).c_str() ) );
-  DBG.println(table.setText(2,0,"Hum:"));
   int dummyHum = random(0, 100);
-  DBG.println(table.setText(3,0, String(dummyHum)));
+
+  table.clear();
+  table.setText(0, 0, "Temp:" );
+  table.setText(0, 1, String(dummyTemp));
+  table.setText(2, 0,"Hum: ");
+  table.setText(2, 1, String(dummyHum) );
+
+  DBG.printf("Temp: %d\n", dummyTemp);
+  DBG.printf("Hum: %d\n", dummyHum);
+  
+}
+
+
+void blinkOneTime(int blinkTime, bool shouldNotBlock = false)
+{
+  digitalWrite(LED_BUILTIN, HIGH);
+  #ifdef ESP32
+  shouldNotBlock ? vTaskDelay(blinkTime) : delay(blinkTime);
+  #elif ESP8266
+  delay(blinkTime);
+  #endif
+  digitalWrite(LED_BUILTIN, LOW);
+  #ifdef ESP32
+  shouldNotBlock ? vTaskDelay(blinkTime) : delay(blinkTime);
+  #elif ESP8266
+  delay(blinkTime);
+  #endif
 }
