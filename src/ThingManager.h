@@ -240,5 +240,14 @@ String getDeviceName(const String &prefix);
  */
 uint32_t getChipId(void);
 
+/**
+ * @brief Get the WiFi Mode Str object
+ * 
+ * @param opmode WiFi mode 
+ * @return String WiFi mode as String
+ */
+String getWiFiModeStr(uint8 opmode);
+
 }
 #endif /*** SMART_HOME_DEVICE_MANAGER_H ***/
+

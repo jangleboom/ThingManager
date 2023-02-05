@@ -44,7 +44,7 @@ bool ThingManager::setupStationMode(const char* ssid, const char* password, cons
     DBG.println(WiFi.SSID());
     DBG.print(F("Wifi client started: "));
     DBG.println(WiFi.getHostname());
-    DBG.print(F("Station IP Address: "));
+    DBG.print(F("Local IP address: "));
     DBG.println(WiFi.localIP());
 
     success = true;
@@ -625,3 +625,34 @@ String ThingManager::getDeviceName(const String& prefix)
 
       return chipID;
   }
+
+/**
+ * @brief 
+ * enum WiFiMode { WIFI_OFF = 0, WIFI_STA = 1, WIFI_AP = 2, WIFI_AP_STA = 3 };
+ * 
+ */
+
+String ThingManager::getWiFiModeStr(const uint8 opmode)
+{
+  String mode = "";
+
+  switch (opmode)
+  {
+    case 0:
+      mode = "WIFI_OFF";
+      break;
+    case 1:
+      mode = "WIFI_STA";
+      break;
+    case 2:
+      mode = "WIFI_AP";
+      break;
+    case 3:
+      mode = "WIFI_AP_STA";
+      break;
+    default:
+      break;
+  }
+  
+  return mode;
+}

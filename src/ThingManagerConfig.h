@@ -18,7 +18,7 @@ as submodule into the Smart Home Device project under lib/
   if (DEBUGGING) Serial
 
 #define BAUD                          115200
-#define STATION_SERVER_ENABLED        false
+#define STATION_SERVER_ENABLED        true
 
 #endif  /*** SMART_HOME_DEVICE_MANAGER_CONFIG_H ***/
 #endif
