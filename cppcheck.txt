@@ -1,0 +1,150 @@
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 16 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/main.cpp:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 13 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/ThingManager.cpp:129:19: style: Condition 'result' is always true [knownConditionTrueFalse]
+      DBG.println(result ? "Ready" : "Failed!");
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/ThingManager.cpp:127:16: note: Assuming that condition 'result==true' is not redundant
+    if (result == true)
+               ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/ThingManager.cpp:129:19: note: Condition 'result' is always true
+      DBG.println(result ? "Ready" : "Failed!");
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/OledTable.h:27:1: warning: Member variable 'OledTable::_colWidth' is not initialized in the constructor. [uninitMemberVar]
+OledTable(Adafruit_SSD1306 *display, uint8_t rows, uint8_t cols, bool drawFrame = true)
+^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/OledTable.h:27:1: warning: Member variable 'OledTable::_rowHeight' is not initialized in the constructor. [uninitMemberVar]
+OledTable(Adafruit_SSD1306 *display, uint8_t rows, uint8_t cols, bool drawFrame = true)
+^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.h:150:3: style: Class 'Adafruit_SSD1306' has a constructor with 1 argument that is not explicit. [noExplicitConstructor]
+  Adafruit_SSD1306(int8_t RST = -1);
+  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/OledTable.h:75:10: style: Checking if unsigned expression 'row' is less than zero. [unsignedLessThanZero]
+  if(row < 0 || row > _rows)
+         ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/OledTable.h:80:10: style: Checking if unsigned expression 'col' is less than zero. [unsignedLessThanZero]
+  if(col < 0 || col > _cols)
+         ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:172:19: warning: Member variable 'Adafruit_SSD1306::_i2caddr' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:172:19: warning: Member variable 'Adafruit_SSD1306::_vccstate' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::_i2caddr' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::_vccstate' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::sid' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::sclk' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:190:19: warning: Member variable 'Adafruit_SSD1306::_i2caddr' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:190:19: warning: Member variable 'Adafruit_SSD1306::_vccstate' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:178:3: performance: Variable 'hwSPI' is assigned in constructor body. Consider performing initialization in initialization list. [useInitializationList]
+  hwSPI = false;
+  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:186:3: performance: Variable 'hwSPI' is assigned in constructor body. Consider performing initialization in initialization list. [useInitializationList]
+  hwSPI = true;
+  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:266:40: style: Operator '|' with one operand equal to zero is redundant. [badBitmaskCheck]
+  ssd1306_command(SSD1306_SETSTARTLINE | 0x0);            // line #0
+                                       ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:705:20: style: Variable 'premask' can be declared as const array [constVariable]
+    static uint8_t premask[8] = {0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE };
+                   ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:765:20: style: Variable 'postmask' can be declared as const array [constVariable]
+    static uint8_t postmask[8] = {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F };
+                   ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:172:19: warning: Member variable 'Adafruit_SSD1306::mosiport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:172:19: warning: Member variable 'Adafruit_SSD1306::clkport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:172:19: warning: Member variable 'Adafruit_SSD1306::csport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:172:19: warning: Member variable 'Adafruit_SSD1306::dcport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:172:19: warning: Member variable 'Adafruit_SSD1306::mosipinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:172:19: warning: Member variable 'Adafruit_SSD1306::clkpinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:172:19: warning: Member variable 'Adafruit_SSD1306::cspinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:172:19: warning: Member variable 'Adafruit_SSD1306::dcpinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::mosiport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::clkport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::csport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::dcport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::mosipinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::clkpinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::cspinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:182:19: warning: Member variable 'Adafruit_SSD1306::dcpinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:190:19: warning: Member variable 'Adafruit_SSD1306::mosiport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:190:19: warning: Member variable 'Adafruit_SSD1306::clkport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:190:19: warning: Member variable 'Adafruit_SSD1306::csport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:190:19: warning: Member variable 'Adafruit_SSD1306::dcport' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:190:19: warning: Member variable 'Adafruit_SSD1306::mosipinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:190:19: warning: Member variable 'Adafruit_SSD1306::clkpinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:190:19: warning: Member variable 'Adafruit_SSD1306::cspinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:190:19: warning: Member variable 'Adafruit_SSD1306::dcpinmask' is not initialized in the constructor. [uninitMemberVar]
+Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
+                  ^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:507:0: information: Skipping configuration 'TWBR' since the value of 'TWBR' is unknown. Use -D if you want to check it. You can use -U to skip it explicitly. [ConfigurationNotChecked]
+    uint8_t twbrbackup = TWBR;
+^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:508:0: information: Skipping configuration 'TWBR' since the value of 'TWBR' is unknown. Use -D if you want to check it. You can use -U to skip it explicitly. [ConfigurationNotChecked]
+    TWBR = 12; // upgrade to 400KHz!
+^
+/Users/mrmarkuese/MakeThings/PlatformIO/Projects/ThingManager/src/Adafruit_SSD1306_mini.cpp:527:0: information: Skipping configuration 'TWBR' since the value of 'TWBR' is unknown. Use -D if you want to check it. You can use -U to skip it explicitly. [ConfigurationNotChecked]
+    TWBR = twbrbackup;
+^

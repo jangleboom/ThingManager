@@ -26,40 +26,25 @@ bool ThingManager::setupStationMode(const char* ssid, const char* password, cons
 {
   bool success = false;
 
+  WiFi.softAPdisconnect(true);
   WiFi.disconnect();
   WiFi.mode(WIFI_STA);
+  WiFi.setAutoReconnect(true);
   WiFi.begin(ssid, password);
+  WiFi.waitForConnectResult();
 
-  if (WiFi.waitForConnectResult() != WL_CONNECTED) 
+  if ( ! WiFi.isConnected() )
   {
     DBG.println("WiFi Failed! Try to decrease the distance to the AP or check your PW!");
     success = false;
   }
   else 
   {
-    WiFi.setHostname(deviceName);
-    
-    if (!MDNS.begin(deviceName)) 
-    {
-      DBG.println("Error starting mDNS, use local IP instead!");
-    } 
-    else 
-    {
-      DBG.print(F("Starting mDNS, find me under <http://"));
-      DBG.print(deviceName);
-      DBG.println(F(".local>"));
-#ifdef ESP8266
-      // Add service to MDNS-SD
-      MDNS.addService("http", "tcp", 80);
-      MDNS.update();
-#endif
-    }
-
     DBG.print(F("WiFi connected to SSID: "));
     DBG.println(WiFi.SSID());
     DBG.print(F("Wifi client started: "));
     DBG.println(WiFi.getHostname());
-    DBG.print(F("IP Address: "));
+    DBG.print(F("Station IP Address: "));
     DBG.println(WiFi.localIP());
 
     success = true;
@@ -86,21 +71,23 @@ bool ThingManager::formatLittleFS()
 
 bool ThingManager::checkConnectionToWifiStation() 
 { 
-  bool isConnectedToStation = false;
+  bool isConnectedToStation = WiFi.isConnected();
   
-  int wifiStationMode;
-#ifdef ESP32
-  wifiStationMode = WIFI_MODE_STA;
-#else
-  wifiStationMode = WIFI_STA;
-#endif
-
-  if (WiFi.getMode() == wifiStationMode)
+  if (WiFi.getMode() == WIFI_STA)
   {
-    if (WiFi.status() != WL_CONNECTED) 
+    if ( ! isConnectedToStation) 
     {
-      DBG.println(F("Reconnecting to access point."));
-      isConnectedToStation = WiFi.reconnect();
+      // Check if we have credentials for a available network
+      String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
+      String password = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
+      String deviceName = getDeviceName(DEVICE_TYPE);
+    
+      if ( ! ssid.isEmpty() && ! password.isEmpty() ) 
+      {
+        DBG.println("Try reconnect to access point.");
+        isConnectedToStation = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
+        DBG.printf("isConnectedToStation: %s\n", isConnectedToStation ? "yes" : "no");
+      }
     } 
     else 
     {
@@ -110,8 +97,6 @@ bool ThingManager::checkConnectionToWifiStation()
       DBG.println(WiFi.getHostname());
       DBG.print(F("IP Address: "));
       DBG.println(WiFi.localIP());
-      
-      isConnectedToStation = true;
     }
 #ifdef ESP8266
     MDNS.update();
@@ -124,11 +109,11 @@ bool ThingManager::checkConnectionToWifiStation()
 bool ThingManager::setupAPMode(const char* apSsid, const char* apPassword) 
 {
   DBG.print("Setting soft-AP ... ");
-  // WiFi.disconnect();
+  WiFi.disconnect();
   WiFiMode_t wifiAPMode;
 #ifdef ESP32
-  wifiAPMode = WIFI_MODE_AP;
-  WiFi.mode(WIFI_MODE_AP);
+  wifiAPMode = WIFI_AP;
+  WiFi.mode(WIFI_AP);
 #else
   wifiAPMode = WIFI_AP;
 #endif
@@ -141,11 +126,13 @@ if (WiFi.getMode() == wifiAPMode)
     
     if (result == true)
     {
+      DBG.println(result ? "Ready" : "Failed!");
       DBG.print(F("Access point started: "));
       DBG.println(apSsid);
-      DBG.print(F("IP address: "));
-      IPAddress apIP = WiFi.softAPIP();
-      DBG.println(apIP);
+      DBG.print(F("AP IP address: "));
+      DBG.println(WiFi.softAPIP());
+      DBG.print(F("AP Password: "));
+      DBG.println(AP_PASSWORD);
     }
     else
     {
@@ -163,16 +150,21 @@ if (WiFi.getMode() == wifiAPMode)
 bool ThingManager::setupWiFi(AsyncWebServer* server)
 {
   bool success = false;
-  WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
-  WiFi.disconnect(true);       // STA sollte noch verbunden sein
 
   // Check if we have credentials for a available network
   String lastSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
   String lastPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
+  String deviceName = getDeviceName(DEVICE_TYPE);
+
+  WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
+  WiFi.disconnect(true);       // STA sollte noch verbunden sein
+  WiFi.setHostname(deviceName.c_str());
 
   if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
   {
-    success = setupAPMode(getDeviceName(DEVICE_TYPE).c_str(), AP_PASSWORD);
+    success = setupAPMode(deviceName.c_str(), AP_PASSWORD);
+    delay(500);
+    startServer(server);
     delay(500);
   } 
   else
@@ -182,14 +174,31 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
       DBG.print(F("Waiting for HotSpot "));
       DBG.print(lastSSID);
       DBG.println(F(" to appear..."));
-      // vTaskDelay(1000/portTICK_RATE_MS);
+      #ifdef ESP32
+      vTaskDelay(1000/portTICK_RATE_MS);
+      #else
       delay(1000);
+      #endif
     }
-    success = setupStationMode(lastSSID.c_str(), lastPassword.c_str(), getDeviceName(DEVICE_TYPE).c_str());
-    delay(500);
+
+    success = setupStationMode(lastSSID.c_str(), lastPassword.c_str(), deviceName.c_str());
+    if (STATION_SERVER_ENABLED)
+    {
+      if (!MDNS.begin(deviceName.c_str())) 
+      {
+        DBG.println("Error starting mDNS, use local IP instead!");
+      } 
+      else 
+      {
+        DBG.print(F("Starting mDNS, find me under <http://"));
+        DBG.print(deviceName);
+        DBG.println(F(".local>"));
+      }
+      delay(500);
+      startServer(server);
+      delay(500);
+    }
   }
-  
-  startServer(server);
 
   return success;
 }
