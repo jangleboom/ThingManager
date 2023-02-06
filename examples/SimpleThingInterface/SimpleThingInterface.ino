@@ -7,7 +7,7 @@
 #include <TestsThingManager.h>
 #endif
 
-#define BUTTON_PIN 2
+#define BUTTON_PIN 0
 Button2 button;
 using namespace ThingManager;
 static AsyncWebServer server(80);
@@ -28,7 +28,7 @@ void btnHandler(Button2& btn);
 // SDA GPIO4
 #define OLED_RESET 0  // GPIO0
 Adafruit_SSD1306 display(OLED_RESET);
-OledTable table(&display,4,2);
+OledTable table(&display, 4, 2);
 #define XPOS    0
 #define YPOS    1
 #define DELTAY  2
@@ -38,6 +38,7 @@ OledTable table(&display,4,2);
 #endif
 
 void setupDisplay(void);
+void setupButton(void);
 void printTestDisplay(void);
 void blinkOneTime(int blinkTime, bool shouldNotBlock);
 
@@ -51,14 +52,15 @@ void setup()
   #endif
 
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-  button.begin(BUTTON_PIN);
-  button.setLongClickTime(1000);
-  button.setClickHandler(btnHandler);
-  button.setDoubleClickHandler(btnHandler);
-  button.setLongClickHandler(btnHandler);
+  // Show setup began - Turn on led
+  #ifdef ESP32
+  digitalWrite(LED_BUILTIN, HIGH);
+  #else
+  digitalWrite(LED_BUILTIN, LOW);
+  #endif
 
   setupDisplay();
+  setupButton();
   printTestDisplay();
   //===============================================================================
   // Initialize LittleFS
@@ -77,21 +79,39 @@ void setup()
   
   #ifdef DEBUGGING
   listFiles();
-  delay(3000);
+  delay(1000);
   #endif
   //===============================================================================
-  
-  
-   if (!setupWiFi(&server)) 
+  bool connected = setupWiFi(&server);
+  while (! connected)
   {
-    DBG.println(F("Wifi setup failed, check your credentials"));
-    while (true) blinkOneTime(1000, false);
+    unsigned long currentMillis = millis();
+    static unsigned long previousMillis = 0;
+
+    if (currentMillis - previousMillis >= (unsigned long) 5000) 
+    {
+      previousMillis = currentMillis;
+      connected = checkConnectionToWifiStation();
+      DBG.printf("Wifi ready: %s\n", connected ? "yes" : "no");
+    }
+
+    blinkOneTime(1000, true);
+    button.loop();
+#ifdef ESP8266
+    yield(); // Reset WDT on ESP8266!
+#endif
   }
 
-  // randomSeed(analogRead(0));
+  // Show setup finished - Turn off led
+#ifdef ESP32
+  digitalWrite(LED_BUILTIN, LOW);
+#else
+  digitalWrite(LED_BUILTIN, HIGH);
+#endif
+
 }
 
-const unsigned long RECONNECT_INTERVAL = 30000;
+const unsigned long RECONNECT_INTERVAL = 10000;
 unsigned long previousMillis = RECONNECT_INTERVAL * 2;
 
 void loop() 
@@ -99,27 +119,35 @@ void loop()
   #ifdef DEBUGGING
   aunit::TestRunner::run();
   #endif
-
+  static bool connected;
   unsigned long currentMillis = millis();
   // if WiFi is down, try reconnecting every RECONNECT_INTERVAL seconds
   if (currentMillis - previousMillis > RECONNECT_INTERVAL) 
   {
-    ThingManager::checkConnectionToWifiStation();
-  #ifdef ESP32
-    digitalWrite(LED_BUILTIN, ( (WiFi.getMode() == WIFI_AP) ? HIGH : LOW) );
-  #else
-    digitalWrite(LED_BUILTIN, ( (WiFi.getMode() == WIFI_AP) ? LOW : HIGH) );
-  #endif
-    DBG.printf("WiFi Mode: %s\n", getWiFiModeStr(WiFi.getMode()).c_str());
     previousMillis = currentMillis;
+    connected = ThingManager::checkConnectionToWifiStation();
+    DBG.printf("WiFi Mode: %s\n", getWiFiModeStr(WiFi.getMode()).c_str());
   }
-
-  button.loop();
 
 #ifdef ESP8266
     MDNS.update();
-#endif
-
+#endif 
+  // Show connection state on state led
+ if ( ! connected ) 
+ {
+  blinkOneTime(1000, true);
+ }
+ else
+ {
+  // Turn off led
+  #ifdef ESP32
+  digitalWrite(LED_BUILTIN, LOW);
+  #else
+  digitalWrite(LED_BUILTIN, HIGH);
+  #endif
+ }
+ 
+  button.loop();
 }
 
 
@@ -141,9 +169,7 @@ void btnHandler(Button2& btn)
             break;
         case long_click:
             DBG.print("long ");
-            /** Make some actions, e. g.:
-            /*  Start AP:
-            /**/
+            // Start AP:
             // wipeLittleFSFiles();
             // delay(3000);
             // ESP.restart();
@@ -156,7 +182,20 @@ void btnHandler(Button2& btn)
    }
 }
 
-void setupDisplay() {
+void setupButton()
+{
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  button.begin(BUTTON_PIN);
+  button.setDebounceTime(40);
+  button.setDoubleClickTime(500);
+  button.setLongClickTime(1000);
+  button.setClickHandler(btnHandler);
+  button.setDoubleClickHandler(btnHandler);
+  button.setLongClickHandler(btnHandler);
+}
+
+void setupDisplay() 
+{
   // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 64x48)
   // Clear the buffer.
@@ -189,16 +228,30 @@ void printTestDisplay()
 
 void blinkOneTime(int blinkTime, bool shouldNotBlock = false)
 {
-  digitalWrite(LED_BUILTIN, HIGH);
-  #ifdef ESP32
+  static int ledState = LOW;  // ledState used to set the LED
+  unsigned long currentMillis = millis();
+  static unsigned long previousMillis = 0;
+
+#ifdef ESP32
+  ledState = (ledState == HIGH) ? LOW : HIGH;
+  digitalWrite(LED_BUILTIN, ledState);
   shouldNotBlock ? vTaskDelay(blinkTime) : delay(blinkTime);
-  #elif ESP8266
-  delay(blinkTime);
-  #endif
-  digitalWrite(LED_BUILTIN, LOW);
-  #ifdef ESP32
-  shouldNotBlock ? vTaskDelay(blinkTime) : delay(blinkTime);
-  #elif ESP8266
-  delay(blinkTime);
-  #endif
+ #elif ESP8266
+  if (shouldNotBlock)
+  {
+    if (currentMillis - previousMillis >= (unsigned long) blinkTime) 
+    {
+    // save the last time you blinked the LED
+    previousMillis = currentMillis;
+    ledState = (ledState == HIGH) ? LOW : HIGH;
+    digitalWrite(LED_BUILTIN, ledState);
+    }
+  } 
+  else
+  {
+    delay(blinkTime);
+    ledState = (ledState == HIGH) ? LOW : HIGH;
+    digitalWrite(LED_BUILTIN, ledState);
+  }
+#endif
 }
