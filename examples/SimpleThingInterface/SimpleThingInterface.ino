@@ -83,6 +83,7 @@ void setup()
   #endif
   //===============================================================================
   bool connected = setupWiFi(&server);
+  // Waiting here for WiFi connection
   while (! connected)
   {
     unsigned long currentMillis = millis();
@@ -101,7 +102,13 @@ void setup()
     yield(); // Reset WDT on ESP8266!
 #endif
   }
+  //===============================================================================
+  
+  // Further setup, e. g. FreeRTOS tasks
 
+  // ...
+
+  //===============================================================================
   // Show setup finished - Turn off led
 #ifdef ESP32
   digitalWrite(LED_BUILTIN, LOW);
