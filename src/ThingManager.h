@@ -29,6 +29,8 @@
 #include <error_html.h>
 #include <reboot_html.h>
 
+#include <Button2.h>
+
 #ifdef ESP32
   #include <WiFi.h>
   #include <AsyncTCP.h>
@@ -247,6 +249,18 @@ uint32_t getChipId(void);
  * @return String WiFi mode as String
  */
 String getWiFiModeStr(uint8 opmode);
+
+// Define the callback function type with a return type of void and
+// an int argument
+typedef void (*Callback)(int);
+
+// A function that takes a callback as an argument
+void run(Callback callback); 
+
+// void printCallback(int value);
+// A sample callback function, declared as extern
+void printValue(int value);
+
 
 }
 #endif /*** SMART_HOME_DEVICE_MANAGER_H ***/

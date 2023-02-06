@@ -72,23 +72,31 @@ bool ThingManager::formatLittleFS()
 bool ThingManager::checkConnectionToWifiStation() 
 { 
   bool isConnectedToStation = WiFi.isConnected();
-  
+  // Check if we have credentials for a available network
+  String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
+  String password = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
+  String deviceName = getDeviceName(DEVICE_TYPE);
+
   if (WiFi.getMode() == WIFI_STA)
   {
-    if ( ! isConnectedToStation) 
+    if ( ! isConnectedToStation)
     {
-      // Check if we have credentials for a available network
-      String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
-      String password = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
-      String deviceName = getDeviceName(DEVICE_TYPE);
-    
-      if ( ! ssid.isEmpty() && ! password.isEmpty() ) 
+      if ( ! savedNetworkAvailable(ssid) ) 
       {
-        DBG.println("Try reconnect to access point.");
-        isConnectedToStation = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
-        DBG.printf("isConnectedToStation: %s\n", isConnectedToStation ? "yes" : "no");
+        DBG.print(F("Don't see HotSpot: "));
+        DBG.println(ssid);
+        return false;
       }
-    } 
+      else 
+      {
+      if ( ! ssid.isEmpty() && ! password.isEmpty() ) 
+        {
+          DBG.println("Try reconnect to access point.");
+          isConnectedToStation = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
+          DBG.printf("isConnectedToStation: %s\n", isConnectedToStation ? "yes" : "no");
+        } 
+      } 
+    }
     else 
     {
       DBG.print(F("WiFi connected to SSID: "));
@@ -97,10 +105,10 @@ bool ThingManager::checkConnectionToWifiStation()
       DBG.println(WiFi.getHostname());
       DBG.print(F("IP Address: "));
       DBG.println(WiFi.localIP());
+  #ifdef ESP8266
+      MDNS.update();
+  #endif
     }
-#ifdef ESP8266
-    MDNS.update();
-#endif
   }
 
   return isConnectedToStation;
@@ -150,17 +158,18 @@ if (WiFi.getMode() == wifiAPMode)
 bool ThingManager::setupWiFi(AsyncWebServer* server)
 {
   bool success = false;
-
+  // Test callback:
+  run(printValue);
   // Check if we have credentials for a available network
-  String lastSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
-  String lastPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
+  String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
+  String password = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
   String deviceName = getDeviceName(DEVICE_TYPE);
 
   WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
   WiFi.disconnect(true);       // STA sollte noch verbunden sein
   WiFi.setHostname(deviceName.c_str());
 
-  if (lastSSID.isEmpty() || lastPassword.isEmpty() ) 
+  if (ssid.isEmpty() || password.isEmpty() ) 
   {
     success = setupAPMode(deviceName.c_str(), AP_PASSWORD);
     delay(500);
@@ -169,34 +178,36 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
   } 
   else
   {
-    while ( !savedNetworkAvailable(lastSSID) ) 
+    if ( ! savedNetworkAvailable(ssid) ) 
     {
-      DBG.print(F("Waiting for HotSpot "));
-      DBG.print(lastSSID);
-      DBG.println(F(" to appear..."));
-      #ifdef ESP32
-      vTaskDelay(1000/portTICK_RATE_MS);
-      #else
-      delay(1000);
-      #endif
+      DBG.print(F("Don't see HotSpot: "));
+      DBG.println(ssid);
+      success = false;
+      // #ifdef ESP32
+      // vTaskDelay(1000/portTICK_RATE_MS);
+      // #else
+      // delay(1000);
+      // #endif
     }
-
-    success = setupStationMode(lastSSID.c_str(), lastPassword.c_str(), deviceName.c_str());
-    if (STATION_SERVER_ENABLED)
+    else 
     {
-      if (!MDNS.begin(deviceName.c_str())) 
+      success = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
+      if (STATION_SERVER_ENABLED)
       {
-        DBG.println("Error starting mDNS, use local IP instead!");
-      } 
-      else 
-      {
-        DBG.print(F("Starting mDNS, find me under <http://"));
-        DBG.print(deviceName);
-        DBG.println(F(".local>"));
+        if (!MDNS.begin(deviceName.c_str())) 
+        {
+          DBG.println("Error starting mDNS, use local IP instead!");
+        } 
+        else 
+        {
+          DBG.print(F("Starting mDNS, find me under <http://"));
+          DBG.print(deviceName);
+          DBG.println(F(".local>"));
+        }
+        delay(500);
+        startServer(server);
+        delay(500);
       }
-      delay(500);
-      startServer(server);
-      delay(500);
     }
   }
 
@@ -655,4 +666,16 @@ String ThingManager::getWiFiModeStr(const uint8 opmode)
   }
   
   return mode;
+}
+
+// A function that takes a callback as an argument
+void ThingManager::run(Callback callback) {
+  // Invoke the callback function with an argument of 10
+  callback(10);
+}
+
+// A sample callback function
+void ThingManager::printValue(int value) {
+  DBG.print(F("The value is: "));
+  DBG.println(value);
 }
