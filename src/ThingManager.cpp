@@ -164,12 +164,16 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
   String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
   String password = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
   String deviceName = getDeviceName(DEVICE_TYPE);
+  String wifiMode = readFile(LittleFS, getPath(PARAM_WIFI_MODE).c_str());
+  bool startAP = strcmp(wifiMode.c_str(), "WIFI_AP_MODE") == 0;
 
   WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
   WiFi.disconnect(true);       // STA sollte noch verbunden sein
   WiFi.setHostname(deviceName.c_str());
 
-  if (ssid.isEmpty() || password.isEmpty() ) 
+  
+
+  if (ssid.isEmpty() || password.isEmpty() || startAP) 
   {
     success = setupAPMode(deviceName.c_str(), AP_PASSWORD);
     delay(500);
@@ -264,7 +268,8 @@ void ThingManager::actionRebootESP(AsyncWebServerRequest *request)
 {
   DBG.println("ACTION actionRebootESP!");
   request->send_P(200, "text/html", REBOOT_HTML, ThingManager::processor);
-  delay(5000);
+  writeFile(LittleFS, getPath(PARAM_WIFI_MODE).c_str(), "WIFI_STA_MODE");
+  delay(3000);
   ESP.restart();
 }
 

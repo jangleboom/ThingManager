@@ -28,7 +28,7 @@ void btnHandler(Button2& btn);
 // SDA GPIO4
 #define OLED_RESET 0  // GPIO0
 Adafruit_SSD1306 display(OLED_RESET);
-OledTable table(&display, 4, 2);
+OledTable table(&display, 4, 1);
 #define XPOS    0
 #define YPOS    1
 #define DELTAY  2
@@ -40,6 +40,7 @@ OledTable table(&display, 4, 2);
 void setupDisplay(void);
 void setupButton(void);
 void printTestDisplay(void);
+void printWiFiState(void);
 void blinkOneTime(int blinkTime, bool shouldNotBlock);
 
 void setup() 
@@ -61,7 +62,7 @@ void setup()
 
   setupDisplay();
   setupButton();
-  printTestDisplay();
+  
   //===============================================================================
   // Initialize LittleFS
   // Use board_build.partitions in platformio.ini
@@ -84,6 +85,11 @@ void setup()
   //===============================================================================
   bool connected = setupWiFi(&server);
   // Waiting here for WiFi connection
+  table.clear();
+  table.setText(0, 0, "hotspot");
+  table.setText(1, 0, "search");
+  table.setText(2, 0, "...");
+
   while (! connected)
   {
     unsigned long currentMillis = millis();
@@ -107,7 +113,7 @@ void setup()
   // Further setup, e. g. FreeRTOS tasks
 
   // ...
-
+  printWiFiState();
   //===============================================================================
   // Show setup finished - Turn off led
 #ifdef ESP32
@@ -115,7 +121,6 @@ void setup()
 #else
   digitalWrite(LED_BUILTIN, HIGH);
 #endif
-
 }
 
 const unsigned long RECONNECT_INTERVAL = 10000;
@@ -127,24 +132,36 @@ void loop()
   aunit::TestRunner::run();
   #endif
   static bool connected;
+  WiFiMode_t wifiMode = WiFi.getMode();
   unsigned long currentMillis = millis();
   // if WiFi is down, try reconnecting every RECONNECT_INTERVAL seconds
   if (currentMillis - previousMillis > RECONNECT_INTERVAL) 
   {
     previousMillis = currentMillis;
+    wifiMode = WiFi.getMode();
     connected = ThingManager::checkConnectionToWifiStation();
-    DBG.printf("WiFi Mode: %s\n", getWiFiModeStr(WiFi.getMode()).c_str());
+    DBG.printf("WiFi Mode: %s\n", getWiFiModeStr(wifiMode).c_str());
+    printWiFiState();
   }
 
 #ifdef ESP8266
     MDNS.update();
 #endif 
   // Show connection state on state led
- if ( ! connected ) 
+ if ( ! connected && (wifiMode == WIFI_STA || wifiMode == WIFI_AP_STA)) 
  {
   blinkOneTime(1000, true);
  }
- else
+ else if (wifiMode == WIFI_AP)
+ {
+   // Turn on led
+  #ifdef ESP32
+  digitalWrite(LED_BUILTIN, HIGH);
+  #else
+  digitalWrite(LED_BUILTIN, LOW);
+  #endif
+ }
+ else 
  {
   // Turn off led
   #ifdef ESP32
@@ -165,28 +182,77 @@ void btnHandler(Button2& btn)
     switch ( btn.getType() ) 
     {
         case single_click:
-            DBG.print("single ");
+            DBG.println(F("single click"));
             printTestDisplay();
             break;
         case double_click:
-            DBG.print("double ");
+            DBG.println(F("double click"));
             break;
         case triple_click:
-            DBG.print("triple ");
+            DBG.println(F("triple click"));
             break;
         case long_click:
-            DBG.print("long ");
-            // Start AP:
+            DBG.println(F("long click"));
+            // Set AP-Mode:
+            writeFile(LittleFS, getPath(PARAM_WIFI_MODE).c_str(), "WIFI_AP_MODE");
             // wipeLittleFSFiles();
-            // delay(3000);
-            // ESP.restart();
+            table.clear();
+            table.setText(0, 0, "Reboot" );
+            delay(1000);
+            table.setText(1, 0,"3");
+            delay(500);
+            table.setText(1, 0,"3 2");
+            delay(500);
+            table.setText(1, 0,"3 2 1");
+            delay(500);
+            table.setText(3, 0,"GO!");
+            delay(1000);
+            ESP.restart();
             break;
         case empty:
             DBG.print("empty ");
             break;
     }
-    DBG.println("click");
    }
+}
+
+void printWiFiState()
+{
+  table.clear();
+
+  WiFiMode_t state = WiFi.getMode();
+  String ssid = "no ssid";
+  String devCon = "dev: ";
+  IPAddress ip(0, 0, 0, 0);
+  uint8_t devNum = 0;
+  String ipStr;
+
+  switch (state)
+  {
+    case WIFI_AP:
+      table.setText(0, 0, "WIFI_AP");
+      ssid = WiFi.softAPSSID();
+      devNum = WiFi.softAPgetStationNum();
+      devCon.concat(devNum);
+      table.setText(1, 0, ssid.substring(0, 8) );
+      table.setText(3, 0, devCon);
+      break;
+    case WIFI_STA:
+      table.setText(0, 0, "WIFI_STA");
+      ssid = WiFi.SSID();
+      table.setText(1, 0, ssid.substring(0, 8) );
+      break;
+    // case WIFI_AP_STA:
+    //   table.setText(0, 0, "WIFI_AP_STA");
+    //   break;
+    case WIFI_OFF:
+      table.setText(0, 0, "WIFI_OFF");
+      break;
+      
+    default:
+      break;
+  }
+
 }
 
 void setupButton()
@@ -212,24 +278,24 @@ void setupDisplay()
   table.clear();
   // table.drawLines();
   DBG.println();
- 
   delay(2000);
 }
 
 void printTestDisplay() 
 {
+  String tempStr = "Temp: ";
+  String humStr = "Hum:  ";
   int dummyTemp = random(-20, 40);
   int dummyHum = random(0, 100);
+  tempStr.concat(dummyTemp);
+  humStr.concat(dummyHum);
 
   table.clear();
-  table.setText(0, 0, "Temp:" );
-  table.setText(0, 1, String(dummyTemp));
-  table.setText(2, 0,"Hum: ");
-  table.setText(2, 1, String(dummyHum) );
+  table.setText(2, 0, tempStr);
+  table.setText(3, 0, humStr);
 
   DBG.printf("Temp: %d\n", dummyTemp);
-  DBG.printf("Hum: %d\n", dummyHum);
-  
+  DBG.printf("Hum: %d\n",  dummyHum);
 }
 
 

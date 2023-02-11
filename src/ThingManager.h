@@ -71,6 +71,7 @@ namespace ThingManager
   const char PARAM_MQTT_SUB_TOPIC_2[]   = "sub_topic_2";
   const char PARAM_MQTT_SUB_TOPIC_3[]   = "sub_topic_3";
   const char PARAM_SLEEP_TIME_SEC[]     = "sleep_time_sec";
+  const char PARAM_WIFI_MODE[]          = "wifi_mode";
 
   /**
    * @brief Get the Path From File Name object
