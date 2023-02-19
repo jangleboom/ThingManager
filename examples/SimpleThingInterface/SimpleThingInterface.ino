@@ -130,13 +130,13 @@ void loop()
 {
 #ifdef DEBUGGING
   aunit::TestRunner::run();
-  #endif
+#endif
 
   button.loop();
 
 #ifdef ESP8266
     MDNS.update();
- #endif 
+#endif 
 
   // if WiFi is down, try reconnecting every RECONNECT_INTERVAL seconds
   static bool connected;
@@ -153,7 +153,6 @@ void loop()
 #endif
   }
 }
-
 
 void btnHandler(Button2& btn) 
 {
@@ -233,7 +232,6 @@ void displayWiFiState()
     default:
       break;
   }
-
 }
 
 void setupButton()
@@ -280,7 +278,6 @@ void displayDummyData()
   DBG.printf("Temp: %d\n", dummyTemp);
   DBG.printf("Hum: %d\n",  dummyHum);
 }
-
 
 void blinkOneTime(int blinkTime, bool shouldNotBlock = false)
 {

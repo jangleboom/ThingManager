@@ -184,7 +184,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("sleep_time_sec")[0].placeholder = sleep_time_sec;
             document.getElementsByName("sleep_time_sec")[0].style.color = "black";
         } else {
-            document.getElementsByName("sleep_time_sec")[0].placeholder = "Sleep time in seconds.";
+            document.getElementsByName("sleep_time_sec")[0].placeholder = "-1: disable, 0: endless, 1: 1 s sleep";
             document.getElementsByName("sleep_time_sec")[0].style.color = "grey";
         }
 
