@@ -82,37 +82,36 @@ void setup()
   delay(1000);
   #endif
   //===============================================================================
-  bool connected = setupWiFi(&server);
+  setupWiFi(&server);
+  while (WiFi.getMode() == WIFI_AP)
+  {
+    displayWiFiState();
+    blinkOneTime(2000, false);
+  }
+
   // Waiting here for WiFi connection
   table.clear();
   table.setText(0, 0, "hotspot");
   table.setText(1, 0, "search");
   table.setText(2, 0, "...");
 
-  while (! connected)
-  {
-    unsigned long currentMillis = millis();
-    static unsigned long previousMillis = 0;
+  // Waiting here for WiFi connection
+  table.clear();
+  table.setText(0, 0, "hotspot");
+  table.setText(1, 0, "search");
+  table.setText(2, 0, "...");
+  while (! checkConnectionToWifiStation() ) blinkOneTime(1000, false);
+  displayWiFiState();
 
-    if (currentMillis - previousMillis >= (unsigned long) 5000) 
-    {
-      previousMillis = currentMillis;
-      connected = checkConnectionToWifiStation();
-      DBG.printf("Wifi ready: %s\n", connected ? "yes" : "no");
-    }
+  #ifdef ESP8266
+    MDNS.update();
+  #endif 
 
-    blinkOneTime(1000, true);
-    button.loop();
-#ifdef ESP8266
-    yield(); // Reset WDT on ESP8266!
-#endif
-  }
   //===============================================================================
   
-  // Further setup, e. g. FreeRTOS tasks
+  // Further setup, e. g. Sensor readings, FreeRTOS tasks ect. pp.
 
-  // ...
-  displayWiFiState();
+ 
   //===============================================================================
   // Show setup finished - Turn off led
 #ifdef ESP32
@@ -138,7 +137,7 @@ void loop()
     MDNS.update();
 #endif 
 
-  // if WiFi is down, try reconnecting every RECONNECT_INTERVAL seconds
+  // If WiFi is down, try reconnecting every RECONNECT_INTERVAL seconds
   static bool connected;
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis > RECONNECT_INTERVAL) 
