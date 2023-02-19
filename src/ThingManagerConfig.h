@@ -8,9 +8,11 @@ THIS WILL BE REPLACED BY THE ThingManagerConfig.h after including this project
 as submodule into the Smart Home Device project under lib/
 */
 
-/******************************************************************************/
-//                       Default Serial settings
-/******************************************************************************/
+/*
+===============================================================================
+Default serial settings
+===============================================================================
+*/
 
 //set to true for debug output, false for no debug output
 #define DEBUGGING true 
