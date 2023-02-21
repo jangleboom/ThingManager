@@ -149,42 +149,42 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("pub_topic_1")[0].placeholder = pub_topic_1;
             document.getElementsByName("pub_topic_1")[0].style.color = "black";
         } else {
-            document.getElementsByName("pub_topic_1")[0].placeholder = "broker/place/unit/value1";
+            document.getElementsByName("pub_topic_1")[0].placeholder = "root/place/sensor";
             document.getElementsByName("pub_topic_1")[0].style.color = "grey";
         }
         if (pub_topic_2) {
             document.getElementsByName("pub_topic_2")[0].placeholder = pub_topic_2;
             document.getElementsByName("pub_topic_2")[0].style.color = "black";
         } else {
-            document.getElementsByName("pub_topic_2")[0].placeholder = "broker/place/unit/value2";
+            document.getElementsByName("pub_topic_2")[0].placeholder = "root/place/sensor";
             document.getElementsByName("pub_topic_2")[0].style.color = "grey";
         }
         if (pub_topic_3) {
             document.getElementsByName("pub_topic_3")[0].placeholder = pub_topic_3;
             document.getElementsByName("pub_topic_3")[0].style.color = "black";
         } else {
-            document.getElementsByName("pub_topic_3")[0].placeholder = "broker/place/unit/value3";
+            document.getElementsByName("pub_topic_3")[0].placeholder = "root/place/sensor";
             document.getElementsByName("pub_topic_3")[0].style.color = "grey";
         }
         if (sub_topic_1) {
             document.getElementsByName("sub_topic_1")[0].placeholder = sub_topic_1;
             document.getElementsByName("sub_topic_1")[0].style.color = "black";
         } else {
-            document.getElementsByName("sub_topic_1")[0].placeholder = "broker/place/unit/value1";
+            document.getElementsByName("sub_topic_1")[0].placeholder = "root/place/actuator";
             document.getElementsByName("sub_topic_1")[0].style.color = "grey";
         }
         if (sub_topic_2) {
             document.getElementsByName("sub_topic_2")[0].placeholder = sub_topic_2;
             document.getElementsByName("sub_topic_2")[0].style.color = "black";
         } else {
-            document.getElementsByName("sub_topic_2")[0].placeholder = "broker/place/unit/value2";
+            document.getElementsByName("sub_topic_2")[0].placeholder = "root/place/actuator";
             document.getElementsByName("sub_topic_2")[0].style.color = "grey";
         }
         if (sub_topic_3) {
             document.getElementsByName("sub_topic_3")[0].placeholder = sub_topic_3;
             document.getElementsByName("sub_topic_3")[0].style.color = "black";
         } else {
-            document.getElementsByName("sub_topic_3")[0].placeholder = "broker/place/unit/value3";
+            document.getElementsByName("sub_topic_3")[0].placeholder = "root/place/actuator";
             document.getElementsByName("sub_topic_3")[0].style.color = "grey";
         }
         if (sleep_time_sec) {
