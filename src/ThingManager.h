@@ -20,6 +20,10 @@
 #define THING_MANAGER_H
 
 #include <Arduino.h>
+#include <LittleFS.h> 
+#include <FS.h>
+#include <Button2.h>
+
 
 #if defined(ESP8266)
   #include <ESP8266WiFi.h>
@@ -31,20 +35,13 @@
   #include <AsyncTCP.h>
   #include <ESPmDNS.h>
 #endif
-#include <ESPAsyncWebServer.h>
-#include <AsyncElegantOTA.h>
-#include <ThingManagerConfig.h>
-#include <LittleFS.h> 
-#include <FS.h>
-#include <Button2.h>
+
 #include <index_html.h>
 #include <error_html.h>
 #include <reboot_html.h>
-
-
-
-
-
+#include <ESPAsyncWebServer.h>
+#include <AsyncElegantOTA.h>
+#include <ThingManagerConfig.h>
 
 namespace ThingManager 
 {
@@ -183,6 +180,13 @@ namespace ThingManager
    */
   void actionUpdateData(AsyncWebServerRequest *request);
 
+  /**
+   * @brief Action to handle Over-The-Air-Update
+   * 
+   * @param request Request
+   */
+  void actionOTA(AsyncWebServerRequest *request);
+
   //===============================================================================
   // LittleFS
   /**
@@ -234,7 +238,7 @@ namespace ThingManager
 /**
  * @brief Get the unique Device Name 
  * 
- * @param prefix Device name e. g. rtkrover
+ * @param prefix Device name e. g. thing
  * @return String Name + ID
  */
 String getDeviceName(const String &prefix);

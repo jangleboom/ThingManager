@@ -177,7 +177,7 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
     success = setupAPMode(deviceName.c_str(), AP_PASSWORD);
     delay(500);
     setServerCallbacks(server); 
-    AsyncElegantOTA.begin(server);  // Start ElegantOTA
+    // AsyncElegantOTA.begin(server);  // Start ElegantOTA
     server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
     delay(500);
   } 
@@ -257,6 +257,7 @@ void ThingManager::setServerCallbacks(AsyncWebServer *server)
   server->on("/actionUpdateData", HTTP_POST, actionUpdateData);
   server->on("/actionWipeData", HTTP_POST, actionWipeData);
   server->on("/actionRebootESP", HTTP_POST, actionRebootESP);
+  server->on("/actionOTA", HTTP_POST, actionOTA);
 
   server->onNotFound(notFound);
   // server->begin();
@@ -274,6 +275,14 @@ void ThingManager::actionRebootESP(AsyncWebServerRequest *request)
   writeFile(LittleFS, getPath(PARAM_WIFI_MODE).c_str(), "WIFI_STA_MODE");
   delay(3000);
   ESP.restart();
+}
+
+void ThingManager::actionOTA(AsyncWebServerRequest *request) 
+{
+  DBG.println("ACTION actionOTA!");
+  request->redirect("/update");
+  // Todo: deactivate deep sleep
+  // writeFile(LittleFS, getPath(PARAM_WIFI_MODE).c_str(), "WIFI_STA_MODE");
 }
 
 void ThingManager::actionWipeData(AsyncWebServerRequest *request) 

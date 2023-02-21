@@ -8,6 +8,7 @@ Set 1:
             --FIRE_ENGINE_RED:      #c1292e;
             --ALABASTER_WHITE:      #f1f2eb;
             --ROMAN_SILVER:         #878e99;
+            --GOLD:                 #ffd700;
 Set 2:
             --RUSSIAN_VIOLETT:      #241E4E;
             --GREEN_COLOR:          #399E5A;
@@ -32,6 +33,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             --FIRE_ENGINE_RED: #c1292e;
             --ALABASTER_WHITE: #f1f2eb;
             --ROMAN_SILVER: #878e99;
+            --GOLD:         #ffd700;
         }
 
         body {
@@ -69,6 +71,11 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
 
         .red {
             background-color: var(--FIRE_ENGINE_RED);
+            color: var(--OUTER_SPACE_CRAYOLA);
+        }
+        
+        .gold {
+            background-color: var(--GOLD);
             color: var(--OUTER_SPACE_CRAYOLA);
         }
 
@@ -206,6 +213,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
     <form id="Form1" onsubmit="return confirm('Restart the ESP by pressing the reboot button for your changes to take effect!');" action='actionUpdateData' method='post' target="hidden-form"></form>
     <form id="Form2" onsubmit="return confirm('Are you sure? All saved files would be deleted.');" action='actionWipeData' method='post' target="hidden-form"></form>
     <form id="Form3" onsubmit="return confirm('Connection will be lost during reboot.');" action='actionRebootESP' method='post' target="hidden-form"></form>
+    <form id="Form4" action='actionOTA' method='post' target="hidden-form"></form>
     <input form="Form1" type="hidden" id="radio_state" value=%location_method%>
     <table class="table">
         <tr>
@@ -307,6 +315,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         <input type="submit" form="Form3" class="button green" formaction="/actionRebootESP" value="Reboot" id="reboot_button" name="reboot_button" />
         <input type="reset" form="Form1" class="button blue" value="Cancel" />
         <input type="submit" form="Form2" class="button red" formaction="/actionWipeData" value="Wipe" id="wipe_button" name="wipe_button" />
+        <input type="submit" form="Form4" class="button gold" formaction="/actionOTA" value="OTA" id="ota_button" name="ota_button" />
     </div>
 </body>
 
