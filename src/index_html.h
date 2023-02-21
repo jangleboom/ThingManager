@@ -142,7 +142,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("thing_name")[0].placeholder = thing_name;
             document.getElementsByName("thing_name")[0].style.color = "black";
         } else {
-            document.getElementsByName("thing_name")[0].placeholder = "Enter a thing name";
+            document.getElementsByName("thing_name")[0].placeholder = "Enter a device name";
             document.getElementsByName("thing_name")[0].style.color = "grey";
         }
         if (pub_topic_1) {
