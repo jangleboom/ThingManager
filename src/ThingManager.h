@@ -16,31 +16,35 @@
  *          https://medium.com/@adihendro/html-form-data-input-c942ba23224
  */
 
-#ifndef SMART_HOME_DEVICE_MANAGER_H
-#define SMART_HOME_DEVICE_MANAGER_H
+#ifndef THING_MANAGER_H
+#define THING_MANAGER_H
 
 #include <Arduino.h>
+
+#if defined(ESP8266)
+  #include <ESP8266WiFi.h>
+  #include <ESPAsyncTCP.h>
+  #include <ESP8266mDNS.h>
+  #include <Hash.h>
+#elif defined(ESP32)
+  #include <WiFi.h>
+  #include <AsyncTCP.h>
+  #include <ESPmDNS.h>
+#endif
 #include <ESPAsyncWebServer.h>
+#include <AsyncElegantOTA.h>
 #include <ThingManagerConfig.h>
 #include <LittleFS.h> 
 #include <FS.h>
-
+#include <Button2.h>
 #include <index_html.h>
 #include <error_html.h>
 #include <reboot_html.h>
 
-#include <Button2.h>
 
-#ifdef ESP32
-  #include <WiFi.h>
-  #include <AsyncTCP.h>
-  #include <ESPmDNS.h>
-#else
-  #include <ESP8266WiFi.h>
-  #include <ESPAsyncTCP.h>
-  #include <Hash.h>
-  #include <ESP8266mDNS.h>
-#endif
+
+
+
 
 namespace ThingManager 
 {
@@ -141,7 +145,7 @@ namespace ThingManager
    * 
    * @param server  Pointer to global web server object
    */
-  void startServer(AsyncWebServer *server);
+  void setServerCallbacks(AsyncWebServer *server);
 
   /**
    * @brief Relaces placeholders in HTML code
@@ -264,5 +268,5 @@ void printValue(int value);
 
 
 }
-#endif /*** SMART_HOME_DEVICE_MANAGER_H ***/
+#endif /*** THING_MANAGER_H ***/
 

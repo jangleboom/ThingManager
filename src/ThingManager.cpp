@@ -131,10 +131,9 @@ bool result = WiFi.softAP(apSsid, apPassword);
 if (WiFi.getMode() == wifiAPMode)
   {
     DBG.print(F("Set to WIFI_AP mode."));
-    
-    if (result == true)
+    DBG.println(result ? "Ready" : "Failed!");
+    if (result)
     {
-      DBG.println(result ? "Ready" : "Failed!");
       DBG.print(F("Access point started: "));
       DBG.println(apSsid);
       DBG.print(F("AP IP address: "));
@@ -177,7 +176,9 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
   {
     success = setupAPMode(deviceName.c_str(), AP_PASSWORD);
     delay(500);
-    startServer(server);
+    setServerCallbacks(server); 
+    AsyncElegantOTA.begin(server);  // Start ElegantOTA
+    server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
     delay(500);
   } 
   else
@@ -209,7 +210,9 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
           DBG.println(F(".local>"));
         }
         delay(500);
-        startServer(server);
+        setServerCallbacks(server); 
+        AsyncElegantOTA.begin(server);  // Start ElegantOTA
+        server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
         delay(500);
       }
     }
@@ -244,7 +247,7 @@ bool ThingManager::savedNetworkAvailable(const String& ssid)
                                 Web server
 =================================================================================
 */
-void ThingManager::startServer(AsyncWebServer *server) 
+void ThingManager::setServerCallbacks(AsyncWebServer *server) 
 {
   server->on("/", HTTP_GET, [](AsyncWebServerRequest *request) 
   {
@@ -256,7 +259,7 @@ void ThingManager::startServer(AsyncWebServer *server)
   server->on("/actionRebootESP", HTTP_POST, actionRebootESP);
 
   server->onNotFound(notFound);
-  server->begin();
+  // server->begin();
 }
   
 void ThingManager::notFound(AsyncWebServerRequest *request) 
