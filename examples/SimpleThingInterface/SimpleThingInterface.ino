@@ -10,7 +10,7 @@
 #define BUTTON_PIN 0
 Button2 button;
 using namespace ThingManager;
-static AsyncWebServer server(80);
+AsyncWebServer server(80);
 String scannedSSIDs[MAX_SSIDS];
 
 void btnHandler(Button2& btn);
@@ -83,17 +83,25 @@ void setup()
   #endif
   //===============================================================================
   setupWiFi(&server);
-  while (WiFi.getMode() == WIFI_AP)
+  if (WiFi.getMode() == WIFI_AP)
   {
     displayWiFiState();
-    blinkOneTime(2000, false);
+    int devNum = WiFi.softAPgetStationNum();
+    int prevDevNum = devNum;
+    
+    while (true)
+    {
+      if (devNum != prevDevNum) 
+      {
+        displayWiFiState();
+        prevDevNum = devNum;
+      }
+      devNum = WiFi.softAPgetStationNum();
+      blinkOneTime(500, true);
+      button.loop();
+      yield();
+    }
   }
-
-  // Waiting here for WiFi connection
-  table.clear();
-  table.setText(0, 0, "hotspot");
-  table.setText(1, 0, "search");
-  table.setText(2, 0, "...");
 
   // Waiting here for WiFi connection
   table.clear();
@@ -186,7 +194,7 @@ void btnHandler(Button2& btn)
             delay(500);
             table.setText(1, 0,"3 2 1");
             delay(500);
-            table.setText(3, 0,"GO!");
+            table.setText(2, 0,"GO!");
             delay(1000);
             ESP.restart();
             break;
