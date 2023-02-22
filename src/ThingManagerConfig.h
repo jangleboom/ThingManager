@@ -21,6 +21,8 @@ Default serial settings
 
 #define BAUD                          115200
 #define STATION_SERVER_ENABLED        true
+#define OTA_USER                      "maker"
+#define OTA_PW                        "m4K3fr"
 
 #endif  /*** THING_MANAGER_CONFIG_H ***/
 #endif
