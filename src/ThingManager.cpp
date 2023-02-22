@@ -251,6 +251,7 @@ void ThingManager::setServerCallbacks(AsyncWebServer *server)
 {
   server->on("/", HTTP_GET, [](AsyncWebServerRequest *request) 
   {
+    if ( ! request->authenticate(HTTP_USER, HTTP_PW) ) return request->requestAuthentication();
     request->send_P(200, "text/html", INDEX_HTML, processor);
   });
 

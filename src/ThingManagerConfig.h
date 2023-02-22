@@ -21,8 +21,11 @@ Default serial settings
 
 #define BAUD                          115200
 #define STATION_SERVER_ENABLED        true
-#define OTA_USER                      "maker"   // Change this, or set up a THING_CONFIG_H with own values
-#define OTA_PW                        "m4K3fr"  // Change this, or set up a THING_CONFIG_H with own values
+// Change this, or set up a THING_CONFIG_H with own values
+#define OTA_USER                      "otaadmin"   
+#define OTA_PW                        "0t44dm1n"   
+#define HTTP_USER                     "admin"
+#define HTTP_PW                       "4dm1n"
 
 #endif  /*** THING_MANAGER_CONFIG_H ***/
 #endif
