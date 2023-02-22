@@ -211,7 +211,7 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
         }
         delay(500);
         setServerCallbacks(server); 
-        AsyncElegantOTA.begin(server);  // Start ElegantOTA
+        AsyncElegantOTA.begin(server, OTA_USER, OTA_PW);   // Start ElegantOTA
         server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
         delay(500);
       }
