@@ -4,8 +4,8 @@
 #include <Arduino.h>
 
 /* 
-THIS WILL BE REPLACED BY THE ThingManagerConfig.h after including this project 
-as submodule into the Smart Home Device project under lib/
+THIS WILL BE REPLACED BY THE your own ThingConfig.h after including this project 
+as submodule into the lib/ dir of your thing project. This is just an example.
 */
 
 /*
