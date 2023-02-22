@@ -49,16 +49,6 @@ namespace ThingManager
   #define FILE_READ                               "r"
   #define ROOT_DIR                                "/"
 
-  // DEVICE_TYPE can be defined e. g. in a separate SmartHomeDeviceConfig.h file, if not use this here
-  #ifndef DEVICE_TYPE
-  static const char DEVICE_TYPE[]       = "thing";
-  #endif
-
-  // WiFi credentials for AP mode
-  #define MAX_SSIDS 10 // Space to scan and remember SSIDs
-  const char AP_PASSWORD[]              = "12345678";
-  const char IP_AP[]                    = "192.168.4.1";
-
   // Parameters for LittleFS file management
   const char PARAM_THING_NAME[]         = "thing_name"; 
   const char PARAM_WIFI_SSID[]          = "ssid"; 
