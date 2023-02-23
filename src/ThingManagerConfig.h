@@ -21,12 +21,13 @@ Default serial settings
 
 #define BAUD                          115200
 // If false, the OTA- and config-server only runs in WIFI_AP mode
-#define STATION_SERVER_ENABLED        true          
-// Change this, or set up a THING_CONFIG_H with own values
-#define OTA_USER                      "otaadmin"   
-#define OTA_PW                        "0t44dm1n"   
+#define STATION_SERVER_ENABLED        true   
+
 #define HTTP_USER                     "admin"
 #define HTTP_PW                       "4dm1n"
+// Separate OTA credentials possible
+#define OTA_USER                      ""
+#define OTA_PW                        ""
 
 #ifndef DEVICE_TYPE
 static const char DEVICE_TYPE[]       = "thing";
