@@ -246,7 +246,7 @@ uint32_t getChipId(void);
  * @param opmode WiFi mode 
  * @return String WiFi mode as String
  */
-String getWiFiModeStr(uint8 opmode);
+String getWiFiModeStr(uint8_t opmode);
 
 // Define the callback function type with a return type of void and
 // an int argument

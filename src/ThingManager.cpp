@@ -661,7 +661,7 @@ String ThingManager::getDeviceName(const String& prefix)
  * 
  */
 
-String ThingManager::getWiFiModeStr(const uint8 opmode)
+String ThingManager::getWiFiModeStr(const uint8_t opmode)
 {
   String mode = "";
 
