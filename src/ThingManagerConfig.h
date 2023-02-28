@@ -23,20 +23,14 @@ Default serial settings
 // If false, the OTA- and config-server only runs in WIFI_AP mode
 #define STATION_SERVER_ENABLED        true   
 
-#define HTTP_USER                     "admin"
-#define HTTP_PW                       "4dm1n"
-// Separate OTA credentials possible
-#define OTA_USER                      ""
-#define OTA_PW                        ""
-
 #ifndef DEVICE_TYPE
 static const char DEVICE_TYPE[]       = "thing";
 #endif
 
 // WiFi credentials for AP mode
 #define MAX_SSIDS 10 // Space to scan and remember SSIDs
-const char AP_PASSWORD[]              = "12345678";
-const char IP_AP[]                    = "192.168.4.1";
+const char AP_DEFAULT_PW[]              = "12345678";
+const char AP_DEFAULT_IP[]              = "192.168.4.1";
 
 #endif  /*** THING_MANAGER_CONFIG_H ***/
 #endif

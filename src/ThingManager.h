@@ -3,17 +3,14 @@
  * @author  jangleboom
  * @link    https://github.com/audio-communication-group/ThingManager.git
  * <br>
- * @brief   This is part of a distributed software, here: the web interface to config 
- *          the realtime kinematics rover
+ * @brief   This is network base for a smart home device that uses MQTT. It offers
+ *          a webform to enter and save credentials on a LittleFS. Further
+ *          you can make Over-The-Air updates via AsyncElegantOTA.
  * <br>
- * @todo    - a simular version for the head tracker
+ * @todo    - webform update to change this PW
  *          - a check for special characters in the form
- *          - a check of the number of decimal places in the input of the geo-coordinates 
- *            with regard to a suitable level of accuracy
  *          - upload html and (separated css and js) to LittleFS 
  * 
- * @note    FYI: A good tutorial about how to transfer input data from a from and save them to LittleFS
- *          https://medium.com/@adihendro/html-form-data-input-c942ba23224
  */
 
 #ifndef THING_MANAGER_H
@@ -35,12 +32,14 @@
   #include <ESPmDNS.h>
 #endif
 
-#include <index_html.h>
-#include <error_html.h>
-#include <reboot_html.h>
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
-#include <ThingManagerConfig.h>
+#include "ThingManagerConfig.h"
+
+#include "index_html.h"
+#include "error_html.h"
+#include "reboot_html.h"
+
 
 namespace ThingManager 
 {
@@ -51,8 +50,12 @@ namespace ThingManager
 
   // Parameters for LittleFS file management
   const char PARAM_THING_NAME[]         = "thing_name"; 
-  const char PARAM_WIFI_SSID[]          = "ssid"; 
-  const char PARAM_WIFI_PASSWORD[]      = "password";
+  const char PARAM_WIFI_SSID[]          = "wifi_ssid"; 
+  const char PARAM_WIFI_PW[]            = "wifi_pw";
+  const char PARAM_SERVER_USER[]        = "server_user";
+  const char PARAM_SERVER_PW[]          = "server_pw";
+  const char PARAM_OTA_USER[]           = "ota_user";
+  const char PARAM_OTA_PW[]             = "ota_pw";
   const char PARAM_MQTT_BROKER_IP[]     = "broker_ip";
   const char PARAM_MQTT_PUB_TOPIC_1[]   = "pub_topic_1";
   const char PARAM_MQTT_PUB_TOPIC_2[]   = "pub_topic_2";
@@ -144,35 +147,42 @@ namespace ThingManager
   /**
    * @brief Request not found handler
    * 
-   * @param request Request
+   * @param request AsyncWebServerRequest
    */
   void notFound(AsyncWebServerRequest *request);
 
   /**
+   * @brief Request logout handler
+   * 
+   * @param request AsyncWebServerRequest
+   */
+  void logout(AsyncWebServerRequest *request);
+
+  /**
    * @brief Action to handle wipe LittleFS button
    * 
-   * @param request Request
+   * @param request AsyncWebServerRequest
    */
   void actionWipeData(AsyncWebServerRequest *request);
 
   /**
    * @brief Action to handle Reboot button
    * 
-   * @param request Request
+   * @param request AsyncWebServerRequest
    */
   void actionRebootESP(AsyncWebServerRequest *request);
 
   /**
    * @brief Action to handle Save button
    * 
-   * @param request Request
+   * @param request AsyncWebServerRequest
    */
   void actionUpdateData(AsyncWebServerRequest *request);
 
   /**
    * @brief Action to handle Over-The-Air-Update
    * 
-   * @param request Request
+   * @param request AsyncWebServerRequest
    */
   void actionOTA(AsyncWebServerRequest *request);
 
@@ -246,7 +256,7 @@ uint32_t getChipId(void);
  * @param opmode WiFi mode 
  * @return String WiFi mode as String
  */
-String getWiFiModeStr(uint8 opmode);
+String getWiFiModeStr(uint8_t opmode);
 
 // Define the callback function type with a return type of void and
 // an int argument
@@ -258,7 +268,6 @@ void run(Callback callback);
 // void printCallback(int value);
 // A sample callback function, declared as extern
 void printValue(int value);
-
 
 }
 #endif /*** THING_MANAGER_H ***/
