@@ -19,23 +19,12 @@
 #include <Arduino.h>
 #include <LittleFS.h> 
 #include <FS.h>
-#include <Button2.h>
-
-#if defined(ESP8266)
-  #include <ESP8266WiFi.h>
-  #include <ESPAsyncTCP.h>
-  #include <ESP8266mDNS.h>
-  #include <Hash.h>
-#elif defined(ESP32)
-  #include <WiFi.h>
-  #include <AsyncTCP.h>
-  #include <ESPmDNS.h>
-#endif
-
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPmDNS.h>
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
 #include "ThingManagerConfig.h"
-
 #include "index_html.h"
 #include "error_html.h"
 #include "reboot_html.h"
