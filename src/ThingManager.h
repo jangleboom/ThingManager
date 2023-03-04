@@ -51,8 +51,8 @@ namespace ThingManager
 
   // Parameters for LittleFS file management
   const char PARAM_THING_NAME[]         = "thing_name"; 
-  const char PARAM_WIFI_SSID[]          = "ssid"; 
-  const char PARAM_WIFI_PASSWORD[]      = "password";
+  const char PARAM_WIFI_SSID[]          = "wifi_ssid"; 
+  const char PARAM_WIFI_PASSWORD[]      = "wifi_pw";
   const char PARAM_MQTT_BROKER_IP[]     = "broker_ip";
   const char PARAM_MQTT_PUB_TOPIC_1[]   = "pub_topic_1";
   const char PARAM_MQTT_PUB_TOPIC_2[]   = "pub_topic_2";
