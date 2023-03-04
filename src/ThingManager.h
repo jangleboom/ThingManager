@@ -22,7 +22,6 @@
 #include <Arduino.h>
 #include <LittleFS.h> 
 #include <FS.h>
-#include <Button2.h>
 
 #if defined(ESP8266)
   #include <ESP8266WiFi.h>
