@@ -6,7 +6,9 @@
 #include <TestsThingManager.h>
 #endif
 
+#ifndef ARDUINO_M5STACK_Core2
 void blinkOneTime(int blinkTime, bool isBlocking);
+#endif
 
 using namespace ThingManager;
 AsyncWebServer server(80);
