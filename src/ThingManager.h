@@ -34,9 +34,9 @@
   #include <ESPmDNS.h>
 #endif
 
-#include "../lib/html/index_html.h"
-#include "../lib/html/error_html.h"
-#include "../lib/html/reboot_html.h"
+#include "../../lib/html/index_html.h"
+#include "../../lib/html/error_html.h"
+#include "../../lib/html/reboot_html.h"
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
 #include <ThingManagerConfig.h>
