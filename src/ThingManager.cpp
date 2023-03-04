@@ -175,11 +175,11 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
   if (ssid.isEmpty() || password.isEmpty() || startAP) 
   {
     success = setupAPMode(deviceName.c_str(), AP_PASSWORD);
-    delay(500);
-    setServerCallbacks(server); 
-    AsyncElegantOTA.begin(server, OTA_USER, OTA_PW);  // Start ElegantOTA
-    server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
-    delay(500);
+    // delay(500);
+    // setServerCallbacks(server); 
+    // AsyncElegantOTA.begin(server, OTA_USER, OTA_PW);  // Start ElegantOTA
+    // server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
+    // delay(500);
   } 
   else
   {
@@ -209,13 +209,19 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
           DBG.print(deviceName);
           DBG.println(F(".local>"));
         }
-        delay(500);
-        setServerCallbacks(server); 
-        AsyncElegantOTA.begin(server, OTA_USER, OTA_PW);   // Start ElegantOTA
-        server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
-        delay(500);
+        // delay(500);
+        // setServerCallbacks(server); 
+        // AsyncElegantOTA.begin(server, OTA_USER, OTA_PW);   // Start ElegantOTA
+        // server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
+        // delay(500);
       }
     }
+
+    delay(500);
+    setServerCallbacks(server); 
+    AsyncElegantOTA.begin(server, OTA_USER, OTA_PW);  // Start ElegantOTA
+    server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
+    delay(500);
   }
 
   return success;
