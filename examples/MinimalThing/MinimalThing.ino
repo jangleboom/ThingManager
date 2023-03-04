@@ -6,7 +6,7 @@
 #include <TestsThingManager.h>
 #endif
 
-void blinkOneTime(int blinkTime, bool shouldNotBlock);
+void blinkOneTime(int blinkTime, bool isBlocking);
 
 using namespace ThingManager;
 AsyncWebServer server(80);
@@ -23,6 +23,7 @@ void setup()
   DBG.println(F("Serial setup done."));
   #endif
 
+#ifndef ARDUINO_M5STACK_Core2
   pinMode(LED_BUILTIN, OUTPUT);
   // Show setup began - Turn on led
   #ifdef ESP32
@@ -30,7 +31,7 @@ void setup()
   #else
   digitalWrite(LED_BUILTIN, LOW);
   #endif
-  
+#endif 
   //===============================================================================
   // Initialize LittleFS
   // Use board_build.partitions in platformio.ini
@@ -62,9 +63,12 @@ void setup()
       if (devNum != prevDevNum) 
       {
         prevDevNum = devNum;
+        DBG.printf("Connected client(s): %i\n", devNum);
       }
       devNum = WiFi.softAPgetStationNum();
+#ifndef ARDUINO_M5STACK_Core2
       blinkOneTime(500, true);
+#endif
       yield();
     }
   }
@@ -79,11 +83,13 @@ void setup()
 
  
   //===============================================================================
+#ifndef ARDUINO_M5STACK_Core2
   // Show setup finished - Turn off led
 #ifdef ESP32
   digitalWrite(LED_BUILTIN, LOW);
 #else
   digitalWrite(LED_BUILTIN, HIGH);
+#endif
 #endif
 }
 
@@ -110,18 +116,21 @@ void loop()
   {
     previousMillis = currentMillis;
     connected = checkConnectionToWifiStation();
+    DBG.printf("connected: %s", connected ? "yes" : "no");
     // Turn on/of led
+#ifndef ARDUINO_M5STACK_Core2
 #ifdef ESP32
     digitalWrite(LED_BUILTIN, connected ? LOW : HIGH);
 #else
     digitalWrite(LED_BUILTIN, connected ? HIGH : LOW);
 #endif
+#endif
   }
 }
 
 //===============================================================================
-
-void blinkOneTime(int blinkTime, bool shouldNotBlock = false)
+#ifndef ARDUINO_M5STACK_Core2
+void blinkOneTime(int blinkTime, bool isBlocking = false)
 {
   static int ledState = LOW;  // ledState used to set the LED
   unsigned long currentMillis = millis();
@@ -130,9 +139,9 @@ void blinkOneTime(int blinkTime, bool shouldNotBlock = false)
 #ifdef ESP32
   ledState = (ledState == HIGH) ? LOW : HIGH;
   digitalWrite(LED_BUILTIN, ledState);
-  shouldNotBlock ? vTaskDelay(blinkTime) : delay(blinkTime);
+  isBlocking ? delay(blinkTime) : vTaskDelay(blinkTime);
  #elif ESP8266
-  if (shouldNotBlock)
+  if ( ! isBlocking)
   {
     if (currentMillis - previousMillis >= (unsigned long) blinkTime) 
     {
@@ -150,3 +159,4 @@ void blinkOneTime(int blinkTime, bool shouldNotBlock = false)
   }
 #endif
 }
+#endif
