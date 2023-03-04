@@ -33,6 +33,7 @@
 
 # OS stuff
 .DS_Store
+lib/.DS_Store
 .pio
 
 # Lib stuff
