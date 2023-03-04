@@ -1,9 +1,9 @@
 #include <Arduino.h>
-#include <ThingManagerConfig.h>
-#include <ThingManager.h>
+#include "../../ThingManagerConfig.h"
+#include "../../ThingManager.h"
 
 #ifdef DEBUGGING
-#include <TestsThingManager.h>
+#include "../../TestsThingManager.h"
 #endif
 
 void blinkOneTime(int blinkTime, bool shouldNotBlock);
