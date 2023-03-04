@@ -27,7 +27,7 @@
   #include <ESP8266WiFi.h>
   #include <ESPAsyncTCP.h>
   #include <ESP8266mDNS.h>
-  #include <Hash.h>
+  // #include <Hash.h>
 #elif defined(ESP32)
   #include <WiFi.h>
   #include <AsyncTCP.h>
