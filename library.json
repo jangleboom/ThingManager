@@ -1,0 +1,21 @@
+{
+    "name": "ThingManager",
+    "version": "1.0.0",
+    "description": "Manage your settings for WiFi, MQTT of your smarthome device.",
+    "keywords": ["IOT, MQTT, AsyncElegantOTA, OTA, Update, ESP8266, ESP32, ESPAsyncWebServer"],
+    "authors": [
+      {
+        "name": "jangleboom",
+        "email": "j4ngl3b00m@gmail.com",
+        "url": "https://github.com/jangleboom"
+      }
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/jangleboom/ThingManager.git"
+    },
+    "dependencies": {
+      "arduino": "AsyncElegantOTA, ESPAsyncWebServer"
+    }
+  }
+  
