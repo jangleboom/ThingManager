@@ -74,7 +74,7 @@ bool ThingManager::checkConnectionToWifiStation()
   bool isConnectedToStation = WiFi.isConnected();
   // Check if we have credentials for a available network
   String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
-  String password = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
+  String password = readFile(LittleFS, getPath(PARAM_WIFI_PW).c_str());
   String deviceName = getDeviceName(DEVICE_TYPE);
 
   if (WiFi.getMode() == WIFI_STA)
@@ -139,7 +139,7 @@ if (WiFi.getMode() == wifiAPMode)
       DBG.print(F("AP IP address: "));
       DBG.println(WiFi.softAPIP());
       DBG.print(F("AP Password: "));
-      DBG.println(AP_PASSWORD);
+      DBG.println(apPassword);
     }
     else
     {
@@ -161,7 +161,7 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
   run(printValue);
   // Check if we have credentials for a available network
   String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
-  String password = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
+  String password = readFile(LittleFS, getPath(PARAM_WIFI_PW).c_str());
   String deviceName = getDeviceName(DEVICE_TYPE);
   String wifiMode = readFile(LittleFS, getPath(PARAM_WIFI_MODE).c_str());
   bool startAP = strcmp(wifiMode.c_str(), "WIFI_AP_MODE") == 0;
@@ -174,12 +174,23 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
 
   if (ssid.isEmpty() || password.isEmpty() || startAP) 
   {
-    success = setupAPMode(deviceName.c_str(), AP_PASSWORD);
-    // delay(500);
-    // setServerCallbacks(server); 
-    // AsyncElegantOTA.begin(server, OTA_USER, OTA_PW);  // Start ElegantOTA
-    // server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
-    // delay(500);
+    success = setupAPMode(deviceName.c_str(), AP_DEFAULT_PW);
+    delay(500);
+    setServerCallbacks(server); 
+    String otaUser = readFile( LittleFS, getPath(PARAM_OTA_USER).c_str() );
+    String otaPw = readFile( LittleFS, getPath(PARAM_OTA_PW).c_str() );
+    DBG.printf("otaUser: %s\n", otaUser.c_str());
+    DBG.printf("otaPw: %s\n", otaPw.c_str());
+    if ( ! otaUser.isEmpty() && ! otaPw.isEmpty() )
+    {
+      AsyncElegantOTA.begin(server, otaUser.c_str(), otaPw.c_str());  // Start ElegantOTA with password protection
+    }
+    else
+    {
+      AsyncElegantOTA.begin(server);  // Start ElegantOTA without password protection
+    }
+    server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
+    delay(500);
   } 
   else
   {
@@ -206,22 +217,27 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
         else 
         {
           DBG.print(F("Starting mDNS, find me under <http://"));
-          DBG.print(deviceName);
+          DBG.print(WiFi.getHostname());
           DBG.println(F(".local>"));
         }
-        // delay(500);
-        // setServerCallbacks(server); 
-        // AsyncElegantOTA.begin(server, OTA_USER, OTA_PW);   // Start ElegantOTA
-        // server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
-        // delay(500);
+        delay(500);
+        setServerCallbacks(server); 
+        String OTAUser = readFile( LittleFS, getPath(PARAM_OTA_USER).c_str() );
+        String OTAPW = readFile( LittleFS, getPath(PARAM_OTA_PW).c_str() );
+        if ( ! OTAUser.isEmpty() && ! OTAPW.isEmpty() )
+        {
+          AsyncElegantOTA.begin(server, OTAUser.c_str(), OTAPW.c_str());  // Start ElegantOTA with password protection
+        }
+        else
+        {
+          AsyncElegantOTA.begin(server);  // Start ElegantOTA without password protection
+        }
+        server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
+        delay(500);
+        delay(500);
+
       }
     }
-
-    delay(500);
-    setServerCallbacks(server); 
-    AsyncElegantOTA.begin(server, OTA_USER, OTA_PW);  // Start ElegantOTA
-    server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
-    delay(500);
   }
 
   return success;
@@ -257,7 +273,14 @@ void ThingManager::setServerCallbacks(AsyncWebServer *server)
 {
   server->on("/", HTTP_GET, [](AsyncWebServerRequest *request) 
   {
-    if ( ! request->authenticate(HTTP_USER, HTTP_PW) ) return request->requestAuthentication();
+    String serverUser = readFile( LittleFS, getPath(PARAM_SERVER_USER).c_str() );
+    String serverPW = readFile( LittleFS, getPath(PARAM_SERVER_PW).c_str() );
+    if ( ! serverUser.isEmpty() && ! serverPW.isEmpty() )
+    {
+      if ( ! request->authenticate(serverUser.c_str(), serverPW.c_str() ) ) 
+      return request->requestAuthentication();
+    }
+   
     request->send_P(200, "text/html", INDEX_HTML, processor);
   });
 
@@ -265,7 +288,6 @@ void ThingManager::setServerCallbacks(AsyncWebServer *server)
   server->on("/actionWipeData", HTTP_POST, actionWipeData);
   server->on("/actionRebootESP", HTTP_POST, actionRebootESP);
   server->on("/actionOTA", HTTP_POST, actionOTA);
-
   server->onNotFound(notFound);
   // server->begin();
 }
@@ -280,7 +302,7 @@ void ThingManager::actionRebootESP(AsyncWebServerRequest *request)
   DBG.println("ACTION actionRebootESP!");
   request->send_P(200, "text/html", REBOOT_HTML, ThingManager::processor);
   writeFile(LittleFS, getPath(PARAM_WIFI_MODE).c_str(), "WIFI_STA_MODE");
-  delay(3000);
+  // delay(3000);
   ESP.restart();
 }
 
@@ -288,8 +310,6 @@ void ThingManager::actionOTA(AsyncWebServerRequest *request)
 {
   DBG.println("ACTION actionOTA!");
   request->redirect("/update");
-  // Todo: deactivate deep sleep
-  // writeFile(LittleFS, getPath(PARAM_WIFI_MODE).c_str(), "WIFI_STA_MODE");
 }
 
 void ThingManager::actionWipeData(AsyncWebServerRequest *request) 
@@ -343,11 +363,43 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
       } 
     }
 
-    if (strcmp(p->name().c_str(), PARAM_WIFI_PASSWORD) == 0) 
+    if (strcmp(p->name().c_str(), PARAM_WIFI_PW) == 0) 
     {
       if (p->value().length() > 0) 
       {
-        writeFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str(), p->value().c_str());
+        writeFile(LittleFS, getPath(PARAM_WIFI_PW).c_str(), p->value().c_str());
+      } 
+    }
+
+    if (strcmp(p->name().c_str(), PARAM_SERVER_USER) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, getPath(PARAM_SERVER_USER).c_str(), p->value().c_str());
+      } 
+    }
+
+    if (strcmp(p->name().c_str(), PARAM_SERVER_PW) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, getPath(PARAM_SERVER_PW).c_str(), p->value().c_str());
+      } 
+    }
+
+    if (strcmp(p->name().c_str(), PARAM_OTA_USER) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, getPath(PARAM_OTA_USER).c_str(), p->value().c_str());
+      } 
+    }
+
+    if (strcmp(p->name().c_str(), PARAM_OTA_PW) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, getPath(PARAM_OTA_PW).c_str(), p->value().c_str());
       } 
     }
 
@@ -431,10 +483,34 @@ String ThingManager::processor(const String& var)
     return (savedSSID.isEmpty() ? "" : savedSSID);
   }
 
-  else if (var == PARAM_WIFI_PASSWORD) 
+  else if (var == PARAM_WIFI_PW) 
   {
-    String savedPassword = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
+    String savedPassword = readFile(LittleFS, getPath(PARAM_WIFI_PW).c_str());
     return (savedPassword.isEmpty() ? "" : "*******");
+  }
+
+  else if (var == PARAM_SERVER_USER) 
+  {
+    String savedUser = readFile(LittleFS, getPath(PARAM_SERVER_USER).c_str());
+    return (savedUser.isEmpty() ? "" : savedUser);
+  }
+
+  else if (var == PARAM_SERVER_PW) 
+  {
+    String savedPassword = readFile(LittleFS, getPath(PARAM_SERVER_PW).c_str());
+    return (savedPassword.isEmpty() ? "" : "*******");
+  }
+
+  else if (var == PARAM_OTA_USER) 
+  {
+    String otaUser = readFile(LittleFS, getPath(PARAM_OTA_USER).c_str());
+    return (otaUser.isEmpty() ? "" : otaUser);
+  }
+
+  else if (var == PARAM_OTA_PW) 
+  {
+    String otaPassword = readFile(LittleFS, getPath(PARAM_OTA_PW).c_str());
+    return (otaPassword.isEmpty() ? "" : "*******");
   }
 
   else if (var == PARAM_THING_NAME) 
@@ -493,10 +569,10 @@ String ThingManager::processor(const String& var)
   else if (var == "next_addr") 
   {
     String savedSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
-    String savedPW = readFile(LittleFS, getPath(PARAM_WIFI_PASSWORD).c_str());
+    String savedPW = readFile(LittleFS, getPath(PARAM_WIFI_PW).c_str());
     if (savedSSID.isEmpty() || savedPW.isEmpty()) 
     {
-      return String(IP_AP);
+      return String(AP_DEFAULT_IP);
     } else 
     {
       String clientAddr = getDeviceName(DEVICE_TYPE);
