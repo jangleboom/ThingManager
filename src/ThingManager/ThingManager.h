@@ -25,7 +25,7 @@
   #include <ESPAsyncTCP.h>
   #include <ESP8266mDNS.h>
   // #include <Hash.h>
-#elif defined(ESP32)
+#elif defined(ESP32) || defined(ARDUINO_M5STACK_Core2)
   #include <WiFi.h>
   #include <AsyncTCP.h>
   #include <ESPmDNS.h>
@@ -35,9 +35,9 @@
 #include <AsyncElegantOTA.h>
 // #include <ESPAsyncWebServer.h>
 
-#include "html/index_html.h"
-#include "html/error_html.h"
-#include "html/reboot_html.h"
+#include "../html/index_html.h"
+#include "../html/error_html.h"
+#include "../html/reboot_html.h"
 #include "ThingManagerConfig.h"
 
 #include <ESPAsyncWebServer.h>
