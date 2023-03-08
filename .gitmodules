@@ -6,7 +6,3 @@
 	path = lib/AsyncElegantOTA
 	url = https://github.com/ayushsharma82/AsyncElegantOTA.git
 	branch = master
-[submodule "unit_test/lib"]
-	path = unit_test/lib
-	url = https://github.com/catchorg/Catch2.git
-	branch = devel
