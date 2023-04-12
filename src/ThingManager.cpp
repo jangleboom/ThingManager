@@ -22,7 +22,7 @@ String ThingManager::getPath(const char* fileName)
 =================================================================================
 */
 
-bool ThingManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) 
+bool ThingManager::setupStationMode(const char* ssid, const char* password, const char* deviceName, IPAddress* localIP, IPAddress* gateway, IPAddress* subnet) 
 {
   bool success = false;
 
@@ -30,6 +30,15 @@ bool ThingManager::setupStationMode(const char* ssid, const char* password, cons
   WiFi.disconnect();
   WiFi.mode(WIFI_STA);
   WiFi.setAutoReconnect(true);
+  if (localIP != nullptr && gateway != nullptr && subnet != nullptr)
+  {
+    // Configures static IP address
+    if ( ! WiFi.config(*localIP, *gateway, *subnet) ) 
+    {
+      Serial.println("STA Failed to configure");
+    }
+  }
+ 
   WiFi.begin(ssid, password);
   WiFi.waitForConnectResult();
 
@@ -69,7 +78,7 @@ bool ThingManager::formatLittleFS()
   return formatted;
 }
 
-bool ThingManager::checkConnectionToWifiStation() 
+bool ThingManager::checkConnectionToWifiStation(IPAddress* localIP, IPAddress* gateway, IPAddress* subnet) 
 { 
   bool isConnectedToStation = WiFi.isConnected();
   // Check if we have credentials for a available network
@@ -92,7 +101,7 @@ bool ThingManager::checkConnectionToWifiStation()
       if ( ! ssid.isEmpty() && ! password.isEmpty() ) 
         {
           DBG.println("Try reconnect to access point.");
-          isConnectedToStation = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
+          isConnectedToStation = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str(), localIP, gateway, subnet);
           DBG.printf("isConnectedToStation: %s\n", isConnectedToStation ? "yes" : "no");
         } 
       } 
@@ -154,7 +163,7 @@ if (WiFi.getMode() == wifiAPMode)
   return result;
 }
 
-bool ThingManager::setupWiFi(AsyncWebServer* server)
+bool ThingManager::setupWiFi(AsyncWebServer* server, IPAddress* localIP, IPAddress* gateway, IPAddress* subnet)
 {
   bool success = false;
   // Test callback:
@@ -189,7 +198,7 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
     {
       AsyncElegantOTA.begin(server);  // Start ElegantOTA without password protection
     }
-    server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
+    server->begin();  // Start WebInterface + OTA (http://localIP/update)
     delay(500);
   } 
   else
@@ -207,7 +216,7 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
     }
     else 
     {
-      success = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
+      success = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str(), localIP, gateway, subnet);
       if (STATION_SERVER_ENABLED)
       {
         if (!MDNS.begin(deviceName.c_str())) 
@@ -232,7 +241,7 @@ bool ThingManager::setupWiFi(AsyncWebServer* server)
         {
           AsyncElegantOTA.begin(server);  // Start ElegantOTA without password protection
         }
-        server->begin();  // Start WebInterface + OTA (http://LOCAL_IP/update)
+        server->begin();  // Start WebInterface + OTA (http://localIP/update)
         delay(500);
         delay(500);
 

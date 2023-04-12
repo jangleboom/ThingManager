@@ -82,7 +82,7 @@ namespace ThingManager
    * @param deviceName  MDNS name, connect via http://<deviceName>.local
    * @return bool       True if succeed, false if not
    */
-  bool setupStationMode(const char* ssid, const char* password, const char* deviceName);
+  bool setupStationMode(const char* ssid, const char* password, const char* deviceName, IPAddress* localIP, IPAddress* gateway, IPAddress* subnet);
 
   /**
    * @brief Setup RTK rover station in access point mode to enter local network
@@ -94,6 +94,20 @@ namespace ThingManager
    */
   bool setupAPMode(const char* apSsid, const char* apPassword);
 
+  // /**
+  //  * @brief Setup WiFi: Access point on first run (if no credentials saved in LittleFS),
+  //  *        if this is the case you must enter your wifi credentials into the web form 
+  //  *        (192.168.4.1 is default IP) and reboot. You can change the WiFi credentials
+  //  *        while connected via the web form or press the wipe button to delete the memory.
+  //  *        The device boots in AP mode again.
+  //  *        If the saved credentials are correct (and the AP is available), the 
+  //  *        device will switch connect in station mode after reboot.
+  //  * 
+  //  * @param server Pointer to AsyncWebServer, where the web form is hosted.
+  //  * @return bool       success
+  //  */
+  // bool setupWiFi(AsyncWebServer* server);
+
   /**
    * @brief Setup WiFi: Access point on first run (if no credentials saved in LittleFS),
    *        if this is the case you must enter your wifi credentials into the web form 
@@ -103,18 +117,20 @@ namespace ThingManager
    *        If the saved credentials are correct (and the AP is available), the 
    *        device will switch connect in station mode after reboot.
    * 
-   * @param server Pointer to AsyncWebServer, where the web form is hosted.
+   * @param server  Pointer to AsyncWebServer, where the web form is hosted.
+   * @param localIP IPAddress, static local IP (optional)
+   * @param gateway IPAddress, gateway (optional)
+   * @param subnet  IPAddress, subnet (optional)
    * @return bool       success
    */
-  bool setupWiFi(AsyncWebServer* server);
+  bool setupWiFi(AsyncWebServer* server, IPAddress* localIP, IPAddress* gateway, IPAddress* subnet);
 
   /**
    * @brief Recennect to the last AP, if reachable
    * 
-   * @return true If WiFi connection established
-   * @return false If WiFi connection fails
+   * @return true If WiFi connection established, false If WiFi connection fails
    */
-  bool checkConnectionToWifiStation(void);
+  bool checkConnectionToWifiStation(IPAddress* localIP, IPAddress* gateway, IPAddress* subnet);
 
   /**
    * @brief Check possibility of connecting with an availbale network.
