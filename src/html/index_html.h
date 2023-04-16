@@ -144,7 +144,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("wifi_static_ip")[0].placeholder = wifi_static_ip;
             document.getElementsByName("wifi_static_ip")[0].style.color = "black";
         } else {
-            document.getElementsByName("wifi_static_ip")[0].placeholder = "WiFi static IP (optional)";
+            document.getElementsByName("wifi_static_ip")[0].placeholder = "(optional)";
             document.getElementsByName("wifi_static_ip")[0].style.color = "grey";
         }
 
@@ -152,7 +152,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("wifi_gateway")[0].placeholder = wifi_gateway;
             document.getElementsByName("wifi_gateway")[0].style.color = "black";
         } else {
-            document.getElementsByName("wifi_gateway")[0].placeholder = "WiFi gateway (optional)";
+            document.getElementsByName("wifi_gateway")[0].placeholder = "(optional)";
             document.getElementsByName("wifi_gateway")[0].style.color = "grey";
         }
 
@@ -160,7 +160,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("wifi_subnet")[0].placeholder = wifi_subnet;
             document.getElementsByName("wifi_subnet")[0].style.color = "black";
         } else {
-            document.getElementsByName("wifi_subnet")[0].placeholder = "WiFi subnet (optional)";
+            document.getElementsByName("wifi_subnet")[0].placeholder = "(optional)";
             document.getElementsByName("wifi_subnet")[0].style.color = "grey";
         }
 
@@ -168,7 +168,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("server_user")[0].placeholder = server_user;
             document.getElementsByName("server_user")[0].style.color = "black";
         } else {
-            document.getElementsByName("server_user")[0].placeholder = "Server user name (optional)";
+            document.getElementsByName("server_user")[0].placeholder = "(optional)";
             document.getElementsByName("server_user")[0].style.color = "grey";
         }
 
@@ -176,7 +176,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("server_pw")[0].placeholder = server_pw;
             document.getElementsByName("server_pw")[0].style.color = "black";
         } else {
-            document.getElementsByName("server_pw")[0].placeholder = "Server passwort (optional)";
+            document.getElementsByName("server_pw")[0].placeholder = "(optional)";
             document.getElementsByName("server_pw")[0].style.color = "grey";
         }
 
@@ -184,14 +184,14 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("ota_user")[0].placeholder = ota_user;
             document.getElementsByName("ota_user")[0].style.color = "black";
         } else {
-            document.getElementsByName("ota_user")[0].placeholder = "OTA user name (optional)";
+            document.getElementsByName("ota_user")[0].placeholder = "(optional)";
             document.getElementsByName("ota_user")[0].style.color = "grey";
         }
         if (ota_pw) {
             document.getElementsByName("ota_pw")[0].placeholder = ota_pw;
             document.getElementsByName("ota_pw")[0].style.color = "black";
         } else {
-            document.getElementsByName("ota_pw")[0].placeholder = "OTA passwort (optional)";
+            document.getElementsByName("ota_pw")[0].placeholder = "(optional)";
             document.getElementsByName("ota_pw")[0].style.color = "grey";
         }
 
@@ -207,7 +207,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("thing_name")[0].placeholder = thing_name;
             document.getElementsByName("thing_name")[0].style.color = "black";
         } else {
-            document.getElementsByName("thing_name")[0].placeholder = "You can set a device name";
+            document.getElementsByName("thing_name")[0].placeholder = "(recommended)";
             document.getElementsByName("thing_name")[0].style.color = "grey";
         }
 
@@ -399,7 +399,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             </td>
         </tr>
         <tr>
-            <td style="text-align:left;">Server user:</td>
+            <td style="text-align:left;">Server user name:</td>
             <td colspan=3>
                 <input class="text_field" form="Form1" type="text" name="server_user" placeholder={{server_user}}>
             </td>
@@ -411,7 +411,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             </td>
         </tr>
         <tr>
-            <td style="text-align:left;">OTA user:</td>
+            <td style="text-align:left;">OTA user name:</td>
             <td colspan=3>
                 <input class="text_field" form="Form1" type="text" name="ota_user" placeholder={{ota_user}}>
             </td>
