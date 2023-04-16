@@ -33,7 +33,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             --FIRE_ENGINE_RED: #c1292e;
             --ALABASTER_WHITE: #f1f2eb;
             --ROMAN_SILVER: #878e99;
-            --GOLD:         #ffd700;
+            --GOLD: #ffd700;
         }
 
         body {
@@ -73,7 +73,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             background-color: var(--FIRE_ENGINE_RED);
             color: var(--OUTER_SPACE_CRAYOLA);
         }
-        
+
         .gold {
             background-color: var(--GOLD);
             color: var(--OUTER_SPACE_CRAYOLA);
@@ -107,11 +107,14 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         // check if variable exists
         let wifi_ssid = "%wifi_ssid%";
         let wifi_pw = "%wifi_pw%";
+        let wifi_static_ip = "%wifi_static_ip%";
+        let wifi_gateway = "%wifi_gateway%";
+        let wifi_subnet = "%wifi_subnet%";
+        let broker_ip = "%broker_ip%";
         let server_user = "%server_user%";
         let server_pw = "%server_pw%";
         let ota_user = "%ota_user%";
         let ota_pw = "%ota_pw%";
-        let broker_ip = "%broker_ip%";
         let thing_name = "%thing_name%";
         let pub_topic_1 = "%pub_topic_1%";
         let pub_topic_2 = "%pub_topic_2%";
@@ -128,6 +131,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("wifi_ssid")[0].placeholder = "WiFi SSID";
             document.getElementsByName("wifi_ssid")[0].style.color = "grey";
         }
+
         if (wifi_pw) {
             document.getElementsByName("wifi_pw")[0].placeholder = wifi_pw;
             document.getElementsByName("wifi_pw")[0].style.color = "black";
@@ -135,34 +139,62 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("wifi_pw")[0].placeholder = "WiFi password";
             document.getElementsByName("wifi_pw")[0].style.color = "grey";
         }
+
+        if (wifi_static_ip) {
+            document.getElementsByName("wifi_static_ip")[0].placeholder = wifi_static_ip;
+            document.getElementsByName("wifi_static_ip")[0].style.color = "black";
+        } else {
+            document.getElementsByName("wifi_static_ip")[0].placeholder = "WiFi static IP (optional)";
+            document.getElementsByName("wifi_static_ip")[0].style.color = "grey";
+        }
+
+        if (wifi_gateway) {
+            document.getElementsByName("wifi_gateway")[0].placeholder = wifi_gateway;
+            document.getElementsByName("wifi_gateway")[0].style.color = "black";
+        } else {
+            document.getElementsByName("wifi_gateway")[0].placeholder = "WiFi gateway (optional)";
+            document.getElementsByName("wifi_gateway")[0].style.color = "grey";
+        }
+
+        if (wifi_subnet) {
+            document.getElementsByName("wifi_subnet")[0].placeholder = wifi_subnet;
+            document.getElementsByName("wifi_subnet")[0].style.color = "black";
+        } else {
+            document.getElementsByName("wifi_subnet")[0].placeholder = "WiFi subnet (optional)";
+            document.getElementsByName("wifi_subnet")[0].style.color = "grey";
+        }
+
         if (server_user) {
             document.getElementsByName("server_user")[0].placeholder = server_user;
             document.getElementsByName("server_user")[0].style.color = "black";
         } else {
-            document.getElementsByName("server_user")[0].placeholder = "You can set an user name";
+            document.getElementsByName("server_user")[0].placeholder = "Server user name (optional)";
             document.getElementsByName("server_user")[0].style.color = "grey";
         }
+
         if (server_pw) {
             document.getElementsByName("server_pw")[0].placeholder = server_pw;
             document.getElementsByName("server_pw")[0].style.color = "black";
         } else {
-            document.getElementsByName("server_pw")[0].placeholder = "You can set a passwort";
+            document.getElementsByName("server_pw")[0].placeholder = "Server passwort (optional)";
             document.getElementsByName("server_pw")[0].style.color = "grey";
         }
+
         if (ota_user) {
             document.getElementsByName("ota_user")[0].placeholder = ota_user;
             document.getElementsByName("ota_user")[0].style.color = "black";
         } else {
-            document.getElementsByName("ota_user")[0].placeholder = "You can set an OTA user name";
+            document.getElementsByName("ota_user")[0].placeholder = "OTA user name (optional)";
             document.getElementsByName("ota_user")[0].style.color = "grey";
         }
         if (ota_pw) {
             document.getElementsByName("ota_pw")[0].placeholder = ota_pw;
             document.getElementsByName("ota_pw")[0].style.color = "black";
         } else {
-            document.getElementsByName("ota_pw")[0].placeholder = "You can set an OTA passwort";
+            document.getElementsByName("ota_pw")[0].placeholder = "OTA passwort (optional)";
             document.getElementsByName("ota_pw")[0].style.color = "grey";
         }
+
         if (broker_ip) {
             document.getElementsByName("broker_ip")[0].placeholder = broker_ip;
             document.getElementsByName("broker_ip")[0].style.color = "black";
@@ -170,6 +202,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("broker_ip")[0].placeholder = "Your broker IP";
             document.getElementsByName("broker_ip")[0].style.color = "grey";
         }
+
         if (thing_name) {
             document.getElementsByName("thing_name")[0].placeholder = thing_name;
             document.getElementsByName("thing_name")[0].style.color = "black";
@@ -177,6 +210,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("thing_name")[0].placeholder = "You can set a device name";
             document.getElementsByName("thing_name")[0].style.color = "grey";
         }
+
         if (pub_topic_1) {
             document.getElementsByName("pub_topic_1")[0].placeholder = pub_topic_1;
             document.getElementsByName("pub_topic_1")[0].style.color = "black";
@@ -184,6 +218,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("pub_topic_1")[0].placeholder = "root/place/sensor";
             document.getElementsByName("pub_topic_1")[0].style.color = "grey";
         }
+
         if (pub_topic_2) {
             document.getElementsByName("pub_topic_2")[0].placeholder = pub_topic_2;
             document.getElementsByName("pub_topic_2")[0].style.color = "black";
@@ -191,6 +226,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("pub_topic_2")[0].placeholder = "root/place/sensor";
             document.getElementsByName("pub_topic_2")[0].style.color = "grey";
         }
+
         if (pub_topic_3) {
             document.getElementsByName("pub_topic_3")[0].placeholder = pub_topic_3;
             document.getElementsByName("pub_topic_3")[0].style.color = "black";
@@ -198,6 +234,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("pub_topic_3")[0].placeholder = "root/place/sensor";
             document.getElementsByName("pub_topic_3")[0].style.color = "grey";
         }
+
         if (sub_topic_1) {
             document.getElementsByName("sub_topic_1")[0].placeholder = sub_topic_1;
             document.getElementsByName("sub_topic_1")[0].style.color = "black";
@@ -205,6 +242,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("sub_topic_1")[0].placeholder = "root/place/actuator";
             document.getElementsByName("sub_topic_1")[0].style.color = "grey";
         }
+
         if (sub_topic_2) {
             document.getElementsByName("sub_topic_2")[0].placeholder = sub_topic_2;
             document.getElementsByName("sub_topic_2")[0].style.color = "black";
@@ -212,6 +250,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("sub_topic_2")[0].placeholder = "root/place/actuator";
             document.getElementsByName("sub_topic_2")[0].style.color = "grey";
         }
+
         if (sub_topic_3) {
             document.getElementsByName("sub_topic_3")[0].placeholder = sub_topic_3;
             document.getElementsByName("sub_topic_3")[0].style.color = "black";
@@ -219,6 +258,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             document.getElementsByName("sub_topic_3")[0].placeholder = "root/place/actuator";
             document.getElementsByName("sub_topic_3")[0].style.color = "grey";
         }
+
         if (sleep_time_sec) {
             document.getElementsByName("sleep_time_sec")[0].placeholder = sleep_time_sec;
             document.getElementsByName("sleep_time_sec")[0].style.color = "black";
@@ -229,10 +269,9 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
 
         console.log(wifi_ssid);
         console.log(wifi_pw);
-        console.log(server_user);
-        console.log(server_pw);
-        console.log(ota_user);
-        console.log(ota_pw);
+        console.log(wifi_static_ip);
+        console.log(wifi_gateway);
+        console.log(wifi_subnet);
         console.log(broker_ip);
         console.log(thing_name);
         console.log(pub_topic_1);
@@ -241,6 +280,10 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
         console.log(sub_topic_1);
         console.log(sub_topic_2);
         console.log(sub_topic_3);
+        console.log(server_user);
+        console.log(server_pw);
+        console.log(ota_user);
+        console.log(ota_pw);
         console.log(sleep_time_sec);
     }
 </script>
@@ -290,6 +333,24 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
             <td style="text-align:left;">Thing name:</td>
             <td colspan=3>
                 <input class="text_field" form="Form1" type="text" name="thing_name" placeholder={{thing_name}}>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:left;">Static IP:</td>
+            <td colspan=3>
+                <input class="text_field" form="Form1" type="text" name="wifi_static_ip" placeholder={{wifi_static_ip}}>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:left;">Gateway:</td>
+            <td colspan=3>
+                <input class="text_field" form="Form1" type="text" name="wifi_gateway" placeholder={{wifi_gateway}}>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:left;">Subnet:</td>
+            <td colspan=3>
+                <input class="text_field" form="Form1" type="text" name="wifi_subnet" placeholder={{wifi_subnet}}>
             </td>
         </tr>
         <tr>

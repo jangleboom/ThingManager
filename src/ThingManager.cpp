@@ -21,24 +21,35 @@ String ThingManager::getPath(const char* fileName)
                                 WiFi
 =================================================================================
 */
-
-bool ThingManager::setupStationMode(const char* ssid, const char* password, const char* deviceName, IPAddress* localIP, IPAddress* gateway, IPAddress* subnet) 
+bool ThingManager::setupStationMode(const char* ssid, const char* password, const char* deviceName) 
 {
   bool success = false;
+  String static_ip = readFile(LittleFS, getPath(PARAM_WIFI_STATIC_IP).c_str());
+  String gateway = readFile(LittleFS, getPath(PARAM_WIFI_GATEWAY).c_str());
+  String subnet = readFile(LittleFS, getPath(PARAM_WIFI_SUBNET).c_str());
+  
+  if (!static_ip.isEmpty() && !gateway.isEmpty() && !subnet.isEmpty())
+  {
+    auto static_ip_addr = IPAddress();
+    auto gateway_addr = IPAddress();
+    auto subnet_addr = IPAddress();
+    static_ip_addr.fromString(static_ip);
+    gateway_addr.fromString(gateway);
+    subnet_addr.fromString(subnet);
+
+    // Configures static IP address
+    if ( !WiFi.config(static_ip_addr, gateway_addr, subnet_addr) ) 
+    {
+      DBG.println("STA Failed to configure");
+    }
+  }
+
+ 
 
   WiFi.softAPdisconnect(true);
   WiFi.disconnect();
   WiFi.mode(WIFI_STA);
   WiFi.setAutoReconnect(true);
-  if (localIP != nullptr && gateway != nullptr && subnet != nullptr)
-  {
-    // Configures static IP address
-    if ( ! WiFi.config(*localIP, *gateway, *subnet) ) 
-    {
-      Serial.println("STA Failed to configure");
-    }
-  }
- 
   WiFi.begin(ssid, password);
   WiFi.waitForConnectResult();
 
@@ -78,13 +89,16 @@ bool ThingManager::formatLittleFS()
   return formatted;
 }
 
-bool ThingManager::checkConnectionToWifiStation(IPAddress* localIP, IPAddress* gateway, IPAddress* subnet) 
+bool ThingManager::checkConnectionToWifiStation() 
 { 
   bool isConnectedToStation = WiFi.isConnected();
   // Check if we have credentials for a available network
   String ssid = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
   String password = readFile(LittleFS, getPath(PARAM_WIFI_PW).c_str());
   String deviceName = getDeviceName(DEVICE_TYPE);
+  String static_ip = readFile(LittleFS, getPath(PARAM_WIFI_STATIC_IP).c_str());
+  String gateway = readFile(LittleFS, getPath(PARAM_WIFI_GATEWAY).c_str());
+  String subnet = readFile(LittleFS, getPath(PARAM_WIFI_SUBNET).c_str());
 
   if (WiFi.getMode() == WIFI_STA)
   {
@@ -101,7 +115,7 @@ bool ThingManager::checkConnectionToWifiStation(IPAddress* localIP, IPAddress* g
       if ( ! ssid.isEmpty() && ! password.isEmpty() ) 
         {
           DBG.println("Try reconnect to access point.");
-          isConnectedToStation = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str(), localIP, gateway, subnet);
+          isConnectedToStation = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
           DBG.printf("isConnectedToStation: %s\n", isConnectedToStation ? "yes" : "no");
         } 
       } 
@@ -163,7 +177,7 @@ if (WiFi.getMode() == wifiAPMode)
   return result;
 }
 
-bool ThingManager::setupWiFi(AsyncWebServer* server, IPAddress* localIP, IPAddress* gateway, IPAddress* subnet)
+bool ThingManager::setupWiFi(AsyncWebServer* server)
 {
   bool success = false;
   // Test callback:
@@ -178,8 +192,6 @@ bool ThingManager::setupWiFi(AsyncWebServer* server, IPAddress* localIP, IPAddre
   WiFi.softAPdisconnect(true); // AP  sollte noch verbunden sein
   WiFi.disconnect(true);       // STA sollte noch verbunden sein
   WiFi.setHostname(deviceName.c_str());
-
-  
 
   if (ssid.isEmpty() || password.isEmpty() || startAP) 
   {
@@ -216,7 +228,7 @@ bool ThingManager::setupWiFi(AsyncWebServer* server, IPAddress* localIP, IPAddre
     }
     else 
     {
-      success = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str(), localIP, gateway, subnet);
+      success = setupStationMode(ssid.c_str(), password.c_str(), deviceName.c_str());
       if (STATION_SERVER_ENABLED)
       {
         if (!MDNS.begin(deviceName.c_str())) 
@@ -380,6 +392,30 @@ void ThingManager::actionUpdateData(AsyncWebServerRequest *request)
       } 
     }
 
+    if (strcmp(p->name().c_str(), PARAM_WIFI_STATIC_IP) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, getPath(PARAM_WIFI_STATIC_IP).c_str(), p->value().c_str());
+      } 
+    }
+
+    if (strcmp(p->name().c_str(), PARAM_WIFI_GATEWAY) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, getPath(PARAM_WIFI_GATEWAY).c_str(), p->value().c_str());
+      } 
+    }
+
+    if (strcmp(p->name().c_str(), PARAM_WIFI_SUBNET) == 0) 
+    {
+      if (p->value().length() > 0) 
+      {
+        writeFile(LittleFS, getPath(PARAM_WIFI_SUBNET).c_str(), p->value().c_str());
+      } 
+    }
+
     if (strcmp(p->name().c_str(), PARAM_SERVER_USER) == 0) 
     {
       if (p->value().length() > 0) 
@@ -498,6 +534,24 @@ String ThingManager::processor(const String& var)
     return (savedPassword.isEmpty() ? "" : "*******");
   }
 
+  else if (var == PARAM_WIFI_STATIC_IP) 
+  {
+    String savedIP = readFile(LittleFS, getPath(PARAM_WIFI_STATIC_IP).c_str());
+    return (savedIP.isEmpty() ? "" : savedIP);
+  }
+
+  else if (var == PARAM_WIFI_GATEWAY) 
+  {
+    String savedGateway = readFile(LittleFS, getPath(PARAM_WIFI_GATEWAY).c_str());
+    return (savedGateway.isEmpty() ? "" : savedGateway);
+  }
+
+  else if (var == PARAM_WIFI_SUBNET) 
+  {
+    String savedSubnet = readFile(LittleFS, getPath(PARAM_WIFI_SUBNET).c_str());
+    return (savedSubnet.isEmpty() ? "" : savedSubnet);
+  }
+
   else if (var == PARAM_SERVER_USER) 
   {
     String savedUser = readFile(LittleFS, getPath(PARAM_SERVER_USER).c_str());
@@ -551,6 +605,7 @@ String ThingManager::processor(const String& var)
     String savedPubTopic = readFile(LittleFS, getPath(PARAM_MQTT_PUB_TOPIC_3).c_str());
     return (savedPubTopic.isEmpty() ? "" : savedPubTopic);
   }
+  
   else if (var == PARAM_MQTT_SUB_TOPIC_1) 
   {
     String savedSubTopic = readFile(LittleFS, getPath(PARAM_MQTT_SUB_TOPIC_1).c_str());
@@ -579,6 +634,7 @@ String ThingManager::processor(const String& var)
   {
     String savedSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
     String savedPW = readFile(LittleFS, getPath(PARAM_WIFI_PW).c_str());
+
     if (savedSSID.isEmpty() || savedPW.isEmpty()) 
     {
       return String(AP_DEFAULT_IP);
@@ -589,11 +645,13 @@ String ThingManager::processor(const String& var)
       return clientAddr;
     }
   }
+
   else if (var == "next_ssid") 
   {
     String savedSSID = readFile(LittleFS, getPath(PARAM_WIFI_SSID).c_str());
     return (savedSSID.isEmpty() ? getDeviceName(DEVICE_TYPE) : savedSSID);
   }
+
   return String();
 }
 

@@ -50,6 +50,9 @@ namespace ThingManager
   const char PARAM_THING_NAME[]         = "thing_name"; 
   const char PARAM_WIFI_SSID[]          = "wifi_ssid"; 
   const char PARAM_WIFI_PW[]            = "wifi_pw";
+  const char PARAM_WIFI_STATIC_IP[]     = "wifi_static_ip";
+  const char PARAM_WIFI_GATEWAY[]       = "wifi_gateway";
+  const char PARAM_WIFI_SUBNET[]        = "wifi_subnet";
   const char PARAM_SERVER_USER[]        = "server_user";
   const char PARAM_SERVER_PW[]          = "server_pw";
   const char PARAM_OTA_USER[]           = "ota_user";
@@ -82,7 +85,7 @@ namespace ThingManager
    * @param deviceName  MDNS name, connect via http://<deviceName>.local
    * @return bool       True if succeed, false if not
    */
-  bool setupStationMode(const char* ssid, const char* password, const char* deviceName, IPAddress* localIP, IPAddress* gateway, IPAddress* subnet);
+  bool setupStationMode(const char* ssid, const char* password, const char* deviceName);
 
   /**
    * @brief Setup RTK rover station in access point mode to enter local network
@@ -94,20 +97,6 @@ namespace ThingManager
    */
   bool setupAPMode(const char* apSsid, const char* apPassword);
 
-  // /**
-  //  * @brief Setup WiFi: Access point on first run (if no credentials saved in LittleFS),
-  //  *        if this is the case you must enter your wifi credentials into the web form 
-  //  *        (192.168.4.1 is default IP) and reboot. You can change the WiFi credentials
-  //  *        while connected via the web form or press the wipe button to delete the memory.
-  //  *        The device boots in AP mode again.
-  //  *        If the saved credentials are correct (and the AP is available), the 
-  //  *        device will switch connect in station mode after reboot.
-  //  * 
-  //  * @param server Pointer to AsyncWebServer, where the web form is hosted.
-  //  * @return bool       success
-  //  */
-  // bool setupWiFi(AsyncWebServer* server);
-
   /**
    * @brief Setup WiFi: Access point on first run (if no credentials saved in LittleFS),
    *        if this is the case you must enter your wifi credentials into the web form 
@@ -117,20 +106,17 @@ namespace ThingManager
    *        If the saved credentials are correct (and the AP is available), the 
    *        device will switch connect in station mode after reboot.
    * 
-   * @param server  Pointer to AsyncWebServer, where the web form is hosted.
-   * @param localIP IPAddress, static local IP (optional)
-   * @param gateway IPAddress, gateway (optional)
-   * @param subnet  IPAddress, subnet (optional)
+   * @param server Pointer to AsyncWebServer, where the web form is hosted.
    * @return bool       success
    */
-  bool setupWiFi(AsyncWebServer* server, IPAddress* localIP, IPAddress* gateway, IPAddress* subnet);
+  bool setupWiFi(AsyncWebServer* server);
 
   /**
    * @brief Recennect to the last AP, if reachable
    * 
    * @return true If WiFi connection established, false If WiFi connection fails
    */
-  bool checkConnectionToWifiStation(IPAddress* localIP, IPAddress* gateway, IPAddress* subnet);
+  bool checkConnectionToWifiStation();
 
   /**
    * @brief Check possibility of connecting with an availbale network.
