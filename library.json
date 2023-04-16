@@ -22,13 +22,13 @@
       "name": "AsyncElegantOTA",
       "version": "^2.2.7",
       "platforms": ["espressif8266", "espressif32", "m5stack-core2"]
-    }
+    },
     {
       "owner": "me-no-dev",
       "name": "ESPAsyncWebServer",
       "version": "^1.1.1",
       "platforms": ["espressif8266", "espressif32", "m5stack-core2"]
-    }
+    },
     {
       "owner": "me-no-dev",
       "name": "ESPAsyncTCP",
