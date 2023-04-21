@@ -17,12 +17,12 @@
   "frameworks": "arduino",
   "platforms": ["espressif8266", "espressif32", "m5stack-core2"],
   "dependencies": [
-    {
-      "owner": "Ayush Sharma",
-      "name": "AsyncElegantOTA",
-      "version": "^2.2.7",
-      "platforms": ["espressif8266", "espressif32", "m5stack-core2"]
-    },
+    // {
+    //   "owner": "Ayush Sharma",
+    //   "name": "AsyncElegantOTA",
+    //   "version": "^2.2.7",
+    //   "platforms": ["espressif8266", "espressif32", "m5stack-core2"]
+    // },
     {
       "owner": "me-no-dev",
       "name": "ESPAsyncWebServer",
